@@ -23,9 +23,9 @@ namespace VergiNoDogrula
                 return false;
 
             if (!taxNumber.IsValidTaxNumber())
-                return false;
+                return false; //Gelen vergi numarasının boşlukları olsa buradan geçmez, trim'e gerek yok
 
-            //Gelen vergi numarasının boşluklarını veya baştaki sıfırlarını yukarıda IsValidTaxNumber ile kontrol etmiştik.
+            //other.TaxNumber'ın geçerliliğinde bir sorun olsa taxNumber ile aynı çıkmazlar, other.TaxNumber'ı kontrol etmeye gerek yok
             return taxNumber.Equals(other.TaxNumber);
         }
 
@@ -49,15 +49,17 @@ namespace VergiNoDogrula
             if (string.IsNullOrEmpty(taxNumber))
                 return false;
 
-            string trimmedTaxNr = taxNumber.Trim();
-            int length = trimmedTaxNr.Length;
+            //string trimmedTaxNr = taxNumber.Trim();
+            //Kapattık ↑ çünkü boşlukların temizlenmiş olarak gelmesi lazım
+            //eğer boşluk veya sayısal olmayan başka karakter içeriyorsa geçersiz sayılmalı
+            int length = taxNumber.Length;
             if (length == 10)
             {
-                return trimmedTaxNr.IsValidVKN();
+                return taxNumber.IsValidVKN();
             }
             else if (length == 11)
             {
-                return trimmedTaxNr.IsValidTCKN();
+                return taxNumber.IsValidTCKN();
             }
 
             return false;

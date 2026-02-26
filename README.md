@@ -1,0 +1,119 @@
+# VergiNoDogrula
+
+A WPF desktop application for validating Turkish tax identification numbers — **Vergi Kimlik Numarası (VKN)** and **TC Kimlik Numarası (TCKN)**.
+
+## Features
+
+- **VKN Validation** — Validates 10-digit Turkish corporate tax identification numbers using the official checksum algorithm.
+- **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
+- **Taxpayer Management** — Add and list taxpayer records with title and tax number.
+- **Real-time Error Feedback** — Inline validation errors displayed via red borders and descriptive messages.
+
+## Screenshots
+
+The main window provides text fields for entering a tax number and title, an **Ekle** (Add) button, and a DataGrid listing all entered taxpayer records.
+
+## Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) or later
+- Windows (WPF requires a Windows host)
+
+## Getting Started
+
+### Clone the repository
+
+```bash
+git clone https://github.com/ozalpd/VergiNoDogrula.git
+cd VergiNoDogrula
+```
+
+### Build
+
+```bash
+dotnet build
+```
+
+### Run
+
+```bash
+dotnet run --project VergiNoDogrula.WPF
+```
+
+Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogrula.WPF` set as the startup project.
+
+## Solution Structure
+
+```
+VergiNoDogrula/
+├── VergiNoDogrula/                   # Business-logic class library (net10.0)
+│   ├── Models/
+│   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
+│   │   └── TaxPayer.cs              # Concrete model with setter validation
+│   └── ValidateExtensions.cs        # Extension methods for VKN / TCKN validation
+├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
+│   ├── Commands/
+│   │   ├── AbstractCommand.cs       # Base ICommand implementation
+│   │   └── AddTaxPayerCommand.cs    # Validates & adds a new taxpayer row
+│   ├── ViewModels/
+│   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
+│   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
+│   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer model
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands
+│   ├── Resources/
+│   │   └── Styles.xaml              # Shared WPF styles
+│   ├── MainWindow.xaml / .xaml.cs   # Main application window
+│   └── App.xaml / .xaml.cs          # Application entry point
+└── VergiNoDogrula.sln
+```
+
+## Architecture
+
+The solution follows an **N-tier** architecture with a strict separation between business logic and presentation.
+
+### Business-Logic Layer (`VergiNoDogrula`)
+
+A plain .NET class library with **no UI dependencies**. Contains:
+
+- **`ITaxPayer`** — Contract defining `Title` and `TaxNumber` properties.
+- **`TaxPayer`** — Concrete model. Setters guard against invalid input by throwing `ArgumentNullException` / `ArgumentException`. Implements `IEquatable<TaxPayer>` based on `TaxNumber`.
+- **`ValidateExtensions`** — Pure, thread-safe extension methods implementing the official Turkish VKN (10-digit) and TCKN (11-digit) checksum algorithms.
+
+### Presentation Layer (`VergiNoDogrula.WPF`)
+
+A WPF application following the **MVVM** pattern:
+
+- **ViewModels** delegate validation to the model layer, translating exceptions into `INotifyDataErrorInfo` entries for UI binding.
+- **Commands** inherit from `AbstractCommand` and contain minimal logic.
+- **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
+
+## Validation Rules
+
+| Type | Length | Algorithm |
+|---|---|---|
+| **VKN** (Corporate Tax ID) | 10 digits | Weighted modular arithmetic checksum |
+| **TCKN** (National ID) | 11 digits | Two-stage modular arithmetic checksum; first digit must not be zero |
+
+Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumber` method automatically dispatches to the correct algorithm based on the length of the input string.
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Target Framework | .NET 10 |
+| UI Framework | WPF |
+| Language | C# 14.0 |
+| Build System | SDK-style projects, `dotnet` CLI |
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/my-feature`).
+3. Commit your changes (`git commit -m "Add my feature"`).
+4. Push to the branch (`git push origin feature/my-feature`).
+5. Open a Pull Request.
+
+Please maintain the existing separation of concerns — validation logic belongs in the `VergiNoDogrula` library, not in the WPF project.
+
+## License
+
+This project is provided as-is. See the repository for license details.

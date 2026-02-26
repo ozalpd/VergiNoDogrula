@@ -6,7 +6,75 @@
         xmlns:local="clr-namespace:VergiNoDogrula.WPF"
         mc:Ignorable="d"
         Title="VergiNo ve TCKN Doğrula" Height="600" Width="800">
-    <Grid>
+    <Grid Margin="8,8,8,8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="18" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
+        <Label  Grid.Column="0"
+                Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0,4,0,0" />
+        <TextBox Grid.Column="1" Margin="4,4,8,0" VerticalAlignment="Top"
+                 Style="{StaticResource DisabledWhenNullTextBoxStyle}"
+                 Text="{Binding SelectedItem.TaxNumber, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}" />
+
+        <Label  Grid.Column="0" Grid.Row="2" 
+                Content="Ünvan:" VerticalAlignment="Top" Margin="0,4,0,0" />
+        <TextBox Grid.Column="1" Grid.Row="2"  Margin="4,4,8,0" VerticalAlignment="Top"
+                 Style="{StaticResource DisabledWhenNullTextBoxStyle}"
+                 Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
+        </TextBox>
+
+        <Button Grid.RowSpan="4" Grid.Column="4" Margin="0,4,0,0" VerticalAlignment="Top" Height="24"
+                Content="Ekle" 
+                Command="{Binding AddTaxPayerCommand}"
+                CommandParameter="{Binding}" />
+
+
+        <DataGrid Grid.Row="43" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,8,0"
+                  ItemsSource="{Binding TaxPayers}" 
+                  SelectedItem="{Binding SelectedItem}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Vergi Numarası" Binding="{Binding TaxNumber}" Width="150" />
+                <DataGridTextColumn Header="Ünvan" Binding="{Binding Title}" Width="*" />
+            </DataGrid.Columns>
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TaxPayers.Count}" Value="0">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGrid">
+                                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Background="{TemplateBinding Background}">
+                                            <TextBlock Text="Henüz kayıt yok" 
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       FontSize="14"
+                                                       Foreground="Gray" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Style>
+        </DataGrid>
     </Grid>
 </Window>

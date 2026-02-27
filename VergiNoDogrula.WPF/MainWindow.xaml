@@ -10,8 +10,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120" />
             <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="80" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="80" />
@@ -38,17 +38,17 @@
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>
 
-        <Button Grid.RowSpan="4" Grid.Column="4" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
+        <Button Grid.RowSpan="2" Grid.Column="2" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
                 Content="Ekle" 
                 Command="{Binding AddTaxPayerCommand}"
                 CommandParameter="{Binding}" />
 
-        <Button Grid.RowSpan="4" Grid.Column="5" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
+        <Button Grid.RowSpan="2" Grid.Column="3" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
                 Content="Kaydet" 
                 Command="{Binding SaveTaxPayerCommand}"
                 CommandParameter="{Binding}" />
 
-        <Button Grid.RowSpan="4" Grid.Column="6" Margin="0,4,0,0" VerticalAlignment="Top" Height="24"
+        <Button Grid.RowSpan="2" Grid.Column="4" Margin="0,4,0,0" VerticalAlignment="Top" Height="24"
                 Content="Sil" 
                 Command="{Binding DeleteTaxPayerCommand}"
                 CommandParameter="{Binding}" />

@@ -1,4 +1,6 @@
-﻿using VergiNoDogrula.WPF.ViewModels;
+﻿using System.Windows;
+using VergiNoDogrula.WPF.Dialogs;
+using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF.Commands
 {
@@ -18,9 +20,18 @@ namespace VergiNoDogrula.WPF.Commands
                     return;
             }
 
-            var newTaxPayer = new TaxPayerVM();
-            collection.TaxPayers.Add(newTaxPayer);
-            collection.SelectedItem = newTaxPayer;
+            var dialog = new AddTaxPayerDialog();
+            var owner = Application.Current?.MainWindow;
+            if (owner != null)
+            {
+                dialog.Owner = owner;
+            }
+
+            if (dialog.ShowDialog() == true && dialog.Result != null)
+            {
+                collection.TaxPayers.Add(dialog.Result);
+                collection.SelectedItem = dialog.Result;
+            }
         }
     }
 }

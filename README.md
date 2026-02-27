@@ -6,12 +6,13 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 
 - **VKN Validation** — Validates 10-digit Turkish corporate tax identification numbers using the official checksum algorithm.
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
-- **Taxpayer Management** — Add and list taxpayer records with title and tax number.
+- **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
+- **SQLite Persistence** — Taxpayer records are stored locally in a SQLite database at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
 - **Real-time Error Feedback** — Inline validation errors displayed via red borders and descriptive messages.
 
 ## Screenshots
 
-The main window provides text fields for entering a tax number and title, an **Ekle** (Add) button, and a DataGrid listing all entered taxpayer records.
+The main window provides text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), and **Sil** (Delete) buttons, and a DataGrid listing all entered taxpayer records.
 
 ## Prerequisites
 
@@ -46,6 +47,9 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
 ```
 VergiNoDogrula/
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
+│   ├── Data/
+│   │   ├── ITaxPayerRepository.cs    # Repository interface for CRUD operations
+│   │   └── SqliteTaxPayerRepository.cs # SQLite-backed implementation
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
 │   │   └── TaxPayer.cs              # Concrete model with setter validation
@@ -53,12 +57,14 @@ VergiNoDogrula/
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
-│   │   └── AddTaxPayerCommand.cs    # Validates & adds a new taxpayer row
+│   │   ├── AddTaxPayerCommand.cs    # Validates & adds a new taxpayer row
+│   │   ├── SaveTaxPayerCommand.cs   # Persists the selected taxpayer to SQLite
+│   │   └── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer model
-│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository
 │   ├── Resources/
 │   │   └── Styles.xaml              # Shared WPF styles
 │   ├── MainWindow.xaml / .xaml.cs   # Main application window
@@ -77,14 +83,18 @@ A plain .NET class library with **no UI dependencies**. Contains:
 - **`ITaxPayer`** — Contract defining `Title` and `TaxNumber` properties.
 - **`TaxPayer`** — Concrete model. Setters guard against invalid input by throwing `ArgumentNullException` / `ArgumentException`. Implements `IEquatable<TaxPayer>` based on `TaxNumber`.
 - **`ValidateExtensions`** — Pure, thread-safe extension methods implementing the official Turkish VKN (10-digit) and TCKN (11-digit) checksum algorithms.
+- **`ITaxPayerRepository`** — Repository interface defining async CRUD operations (`GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`).
+- **`SqliteTaxPayerRepository`** — SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses UPSERT semantics for save operations.
 
 ### Presentation Layer (`VergiNoDogrula.WPF`)
 
 A WPF application following the **MVVM** pattern:
 
 - **ViewModels** delegate validation to the model layer, translating exceptions into `INotifyDataErrorInfo` entries for UI binding.
-- **Commands** inherit from `AbstractCommand` and contain minimal logic.
+- **Commands** inherit from `AbstractCommand` and contain minimal logic. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`.
+- **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
+- **Data** is loaded asynchronously on startup via `MainWindow.InitializeDataContext`.
 
 ## Validation Rules
 
@@ -102,6 +112,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 | Target Framework | .NET 10 |
 | UI Framework | WPF |
 | Language | C# 14.0 |
+| Local Database | SQLite via `Microsoft.Data.Sqlite` |
 | Build System | SDK-style projects, `dotnet` CLI |
 
 ## Contributing

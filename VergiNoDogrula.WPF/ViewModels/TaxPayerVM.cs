@@ -15,6 +15,13 @@ namespace VergiNoDogrula.WPF.ViewModels
             _taxPayer = new TaxPayer();
         }
 
+        public TaxPayerVM(TaxPayer taxPayer)
+        {
+            _taxPayer = taxPayer;
+            _taxNumber = taxPayer.TaxNumber;
+            _title = taxPayer.Title;
+        }
+
         public TaxPayerVM(string title, string taxNumber)
         {
             _taxPayer = new TaxPayer();

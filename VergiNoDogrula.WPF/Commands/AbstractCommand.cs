@@ -11,18 +11,11 @@ namespace VergiNoDogrula.WPF.Commands
             return true;
         }
 
-        protected virtual void RaiseCanExecuteChanged(object? sender = null, EventArgs? e = null)
+        public void RaiseCanExecuteChanged()
         {
-            if (sender == null)
-                sender = this;
-            if (e == null)
-                e = new EventArgs();
-
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(sender, e);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
+
         public event EventHandler? CanExecuteChanged;
     }
 }

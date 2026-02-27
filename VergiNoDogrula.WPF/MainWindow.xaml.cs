@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using VergiNoDogrula.Data;
 using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF
@@ -10,8 +12,23 @@ namespace VergiNoDogrula.WPF
     {
         public MainWindow()
         {
+            InitializeDataContext();
             InitializeComponent();
-            DataContext = new TaxPayerCollectionVM();
+        }
+
+        private async void InitializeDataContext()
+        {
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "VergiNoDogrula");
+            Directory.CreateDirectory(appDataPath);
+
+            var databasePath = Path.Combine(appDataPath, "taxpayers.db");
+            var repository = new SqliteTaxPayerRepository(databasePath);
+            var viewModel = new TaxPayerCollectionVM(repository);
+
+            DataContext = viewModel;
+            await viewModel.LoadDataAsync();
         }
     }
 }

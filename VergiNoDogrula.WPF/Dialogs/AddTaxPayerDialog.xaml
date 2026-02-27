@@ -4,7 +4,8 @@
         Title="Yeni Vergi Mükellefi Ekle" Height="200" Width="400"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        Loaded="Window_Loaded">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,7 +22,7 @@
 
         <!-- TaxNumber Label -->
         <Label Grid.Row="0" Grid.Column="0" Content="Vergi No:"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="TaxNumberTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="TaxNumberTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged" PreviewTextInput="TaxNumberTextBox_PreviewTextInput" />
 
         <!-- Title Label -->
         <Label Grid.Row="1" Grid.Column="0" Content="Ünvan:"/>

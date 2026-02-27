@@ -2,36 +2,37 @@
 using VergiNoDogrula.WPF.Dialogs;
 using VergiNoDogrula.WPF.ViewModels;
 
-namespace VergiNoDogrula.WPF.Commands
+namespace VergiNoDogrula.WPF.Commands;
+
+internal class AddTaxPayerCommand : AbstractCommand
 {
-    internal class AddTaxPayerCommand : AbstractCommand
+    public override void Execute(object? parameter)
     {
-        public override void Execute(object? parameter)
+        if (parameter == null || parameter is TaxPayerCollectionVM == false)
+            return;
+
+        TaxPayerCollectionVM collection = (TaxPayerCollectionVM)parameter;
+        var dialog = new AddTaxPayerDialog();
+        dialog.TaxPayerCollection = collection;
+        var owner = Application.Current?.MainWindow;
+        if (owner != null)
         {
-            if (parameter == null || parameter is TaxPayerCollectionVM == false)
+            dialog.Owner = owner;
+        }
+
+        if (dialog.ShowDialog() == true && dialog.Result != null)
+        {
+            var newTaxPayer = dialog.Result;
+            newTaxPayer.Validate();
+            if (newTaxPayer.HasErrors) //This is not expected but its better safe than sorry :-)
+            {
+                var errors = newTaxPayer.GetErrors(nameof(newTaxPayer.TaxNumber));
+                MessageBox.Show(string.Join("\n", errors), "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
-
-            TaxPayerCollectionVM collection = (TaxPayerCollectionVM)parameter;
-            var selectedItem = collection.SelectedItem;
-            if (selectedItem != null)
-            {
-                selectedItem.Validate();
-                if (selectedItem.HasErrors)
-                    return;
             }
-
-            var dialog = new AddTaxPayerDialog();
-            var owner = Application.Current?.MainWindow;
-            if (owner != null)
-            {
-                dialog.Owner = owner;
-            }
-
-            if (dialog.ShowDialog() == true && dialog.Result != null)
-            {
-                collection.TaxPayers.Add(dialog.Result);
-                collection.SelectedItem = dialog.Result;
-            }
+            collection.TaxPayers.Add(newTaxPayer);
+            collection.SelectedItem = newTaxPayer;
         }
     }
 }
+

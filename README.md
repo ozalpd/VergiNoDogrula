@@ -57,9 +57,12 @@ VergiNoDogrula/
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
-│   │   ├── AddTaxPayerCommand.cs    # Validates & adds a new taxpayer row
+│   │   ├── AddTaxPayerCommand.cs    # Opens AddTaxPayerDialog to create a new taxpayer
 │   │   ├── SaveTaxPayerCommand.cs   # Persists the selected taxpayer to SQLite
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
+│   ├── Dialogs/
+│   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
+│   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and button state management
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
@@ -91,7 +94,7 @@ A plain .NET class library with **no UI dependencies**. Contains:
 A WPF application following the **MVVM** pattern:
 
 - **ViewModels** delegate validation to the model layer, translating exceptions into `INotifyDataErrorInfo` entries for UI binding.
-- **Commands** inherit from `AbstractCommand` and contain minimal logic. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`.
+- **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`.
 - **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
 - **Data** is loaded asynchronously on startup via `MainWindow.InitializeDataContext`.

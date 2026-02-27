@@ -30,9 +30,12 @@ VergiNoDogrula/                       # Root / solution directory
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation with public RaiseCanExecuteChanged
-│   │   ├── AddTaxPayerCommand.cs    # Validates then adds a new TaxPayerVM
+│   │   ├── AddTaxPayerCommand.cs    # Opens AddTaxPayerDialog to create a new TaxPayerVM
 │   │   ├── SaveTaxPayerCommand.cs   # Validates then persists the selected TaxPayerVM to SQLite
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected TaxPayerVM from SQLite with confirmation
+│   ├── Dialogs/
+│   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
+│   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and OK button state management
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base (error dictionary)
@@ -72,7 +75,7 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | `ViewModels/TaxPayerVM.cs` | Wraps a `TaxPayer` model; validates by calling model setters in a `try/catch` and forwarding exception messages to the error dictionary. Exposes `Validate()` for on-demand (pre-save) validation. |
 | `ViewModels/TaxPayerCollectionVM.cs` | Owns `ObservableCollection<TaxPayerVM>`, `SelectedItem`, commands, and `ITaxPayerRepository`. Provides `LoadDataAsync`, `SaveCurrentAsync`, `DeleteSelectedAsync`. Subscribes to `SelectedItem.ErrorsChanged` to refresh command states. |
 | `Commands/AbstractCommand.cs` | Base `ICommand` with public `RaiseCanExecuteChanged`. |
-| `Commands/AddTaxPayerCommand.cs` | Validates the currently selected item; if valid, appends a new empty `TaxPayerVM`. |
+| `Commands/AddTaxPayerCommand.cs` | Opens AddTaxPayerDialog to create a new TaxPayerVM |
 | `Commands/SaveTaxPayerCommand.cs` | Persists the selected `TaxPayerVM` to SQLite via the repository. Enabled only when `SelectedItem` is non-null and has no validation errors. |
 | `Commands/DeleteTaxPayerCommand.cs` | Deletes the selected `TaxPayerVM` from SQLite with a confirmation dialog. Enabled only when `SelectedItem` is non-null. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |

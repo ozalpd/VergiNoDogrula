@@ -62,7 +62,7 @@ VergiNoDogrula/
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
-│   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and button state management
+│   │   └── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base

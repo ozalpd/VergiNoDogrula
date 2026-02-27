@@ -30,7 +30,7 @@ VergiNoDogrula/                       # Root / solution directory
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation with public RaiseCanExecuteChanged
-│   │   ├── AddTaxPayerCommand.cs    # Opens AddTaxPayerDialog to create a new TaxPayerVM
+│   │   ├── AddTaxPayerCommand.cs    # Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it.
 │   │   ├── SaveTaxPayerCommand.cs   # Validates then persists the selected TaxPayerVM to SQLite
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected TaxPayerVM from SQLite with confirmation
 │   ├── Dialogs/
@@ -75,9 +75,10 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | `ViewModels/TaxPayerVM.cs` | Wraps a `TaxPayer` model; validates by calling model setters in a `try/catch` and forwarding exception messages to the error dictionary. Exposes `Validate()` for on-demand (pre-save) validation. |
 | `ViewModels/TaxPayerCollectionVM.cs` | Owns `ObservableCollection<TaxPayerVM>`, `SelectedItem`, commands, and `ITaxPayerRepository`. Provides `LoadDataAsync`, `SaveCurrentAsync`, `DeleteSelectedAsync`. Subscribes to `SelectedItem.ErrorsChanged` to refresh command states. |
 | `Commands/AbstractCommand.cs` | Base `ICommand` with public `RaiseCanExecuteChanged`. |
-| `Commands/AddTaxPayerCommand.cs` | Opens AddTaxPayerDialog to create a new TaxPayerVM |
+| `Commands/AddTaxPayerCommand.cs` | Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it. |
 | `Commands/SaveTaxPayerCommand.cs` | Persists the selected `TaxPayerVM` to SQLite via the repository. Enabled only when `SelectedItem` is non-null and has no validation errors. |
 | `Commands/DeleteTaxPayerCommand.cs` | Deletes the selected `TaxPayerVM` from SQLite with a confirmation dialog. Enabled only when `SelectedItem` is non-null. |
+| `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
 | `MainWindow.xaml` | Grid layout with labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, "Ekle" (Add), "Kaydet" (Save), and "Sil" (Delete) buttons, and a `DataGrid`. |
 

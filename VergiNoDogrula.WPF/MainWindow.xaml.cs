@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using VergiNoDogrula.Data;
 using VergiNoDogrula.WPF.Models;
 using VergiNoDogrula.WPF.ViewModels;
@@ -36,9 +35,6 @@ namespace VergiNoDogrula.WPF
         private async Task InitializeDataContextAsync()
         {
             string databasePath = _appSettings.DatabasePath;
-            string backupDir = _appSettings.BackupFolder;
-            uint backupInterval = _appSettings.AutoBackupIntervalMinutes;
-
             var repository = new SqliteTaxPayerRepository(databasePath);
             var viewModel = new TaxPayerCollectionVM(repository);
 

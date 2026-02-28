@@ -44,14 +44,27 @@ namespace VergiNoDogrula.WPF.ViewModels
                     }
 
                     RaisePropertyChanged(nameof(SelectedItem));
+                    Status = string.Empty;
                     RaiseCommandsCanExecuteChanged();
                 }
             }
         }
 
+
+        public string Status
+        {
+            get => _status ?? string.Empty;
+            set
+            {
+                _status = value;
+                RaisePropertyChanged(nameof(Status));
+            }
+        }
+        private string? _status;
+
         public ICommand AddTaxPayerCommand { get; }
-        public ICommand SaveTaxPayerCommand { get; }
         public ICommand DeleteTaxPayerCommand { get; }
+        public ICommand SaveTaxPayerCommand { get; }
 
         private void OnSelectedItemErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {
@@ -75,6 +88,16 @@ namespace VergiNoDogrula.WPF.ViewModels
             {
                 deleteCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        public async Task AddNewAsync(TaxPayerVM taxPayer)
+        {
+            if (taxPayer == null)
+                return;
+
+            TaxPayers.Add(taxPayer);
+            SelectedItem = taxPayer;
+            await SaveCurrentAsync();
         }
 
         public async Task LoadDataAsync()
@@ -103,7 +126,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             {
                 var taxPayer = new TaxPayer(SelectedItem.Title, SelectedItem.TaxNumber);
                 await _repository.SaveAsync(taxPayer);
-                MessageBox.Show("Kayıt başarıyla kaydedildi.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                Status = "Kayıt başarıyla kaydedildi.";
             }
             catch (Exception ex)
             {
@@ -127,7 +150,7 @@ namespace VergiNoDogrula.WPF.ViewModels
                 {
                     TaxPayers.Remove(SelectedItem);
                     SelectedItem = null;
-                    MessageBox.Show("Kayıt başarıyla silindi.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Status = "Kayıt başarıyla silindi.";
                 }
                 else
                 {

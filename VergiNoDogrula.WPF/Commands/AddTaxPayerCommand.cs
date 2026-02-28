@@ -6,7 +6,7 @@ namespace VergiNoDogrula.WPF.Commands;
 
 internal class AddTaxPayerCommand : AbstractCommand
 {
-    public override void Execute(object? parameter)
+    public override async void Execute(object? parameter)
     {
         if (parameter == null || parameter is TaxPayerCollectionVM == false)
             return;
@@ -30,8 +30,8 @@ internal class AddTaxPayerCommand : AbstractCommand
                 MessageBox.Show(string.Join("\n", errors), "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            collection.TaxPayers.Add(newTaxPayer);
-            collection.SelectedItem = newTaxPayer;
+
+            await collection.AddNewAsync(newTaxPayer);
         }
     }
 }

@@ -5,49 +5,21 @@ using System.Windows.Input;
 using VergiNoDogrula.Data;
 using VergiNoDogrula.Models;
 using VergiNoDogrula.WPF.Commands;
+using VergiNoDogrula.WPF.Helpers;
 
 namespace VergiNoDogrula.WPF.ViewModels
 {
-    internal class TaxPayerCollectionVM : AbstractViewModel
+    internal class TaxPayerCollectionVM : AbstractCollectionVM<TaxPayerVM>
     {
-        private TaxPayerVM? _selectedItem;
         private readonly ITaxPayerRepository _repository;
 
         public TaxPayerCollectionVM(ITaxPayerRepository repository)
         {
             _repository = repository;
-            TaxPayers = new ObservableCollection<TaxPayerVM>();
+
             AddTaxPayerCommand = new AddTaxPayerCommand();
             SaveTaxPayerCommand = new SaveTaxPayerCommand();
             DeleteTaxPayerCommand = new DeleteTaxPayerCommand();
-        }
-
-        public ObservableCollection<TaxPayerVM> TaxPayers { get; }
-
-        public TaxPayerVM? SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    if (_selectedItem != null)
-                    {
-                        _selectedItem.ErrorsChanged -= OnSelectedItemErrorsChanged;
-                    }
-
-                    _selectedItem = value;
-
-                    if (_selectedItem != null)
-                    {
-                        _selectedItem.ErrorsChanged += OnSelectedItemErrorsChanged;
-                    }
-
-                    RaisePropertyChanged(nameof(SelectedItem));
-                    Status = string.Empty;
-                    RaiseCommandsCanExecuteChanged();
-                }
-            }
         }
 
 
@@ -65,6 +37,45 @@ namespace VergiNoDogrula.WPF.ViewModels
         public ICommand AddTaxPayerCommand { get; }
         public ICommand DeleteTaxPayerCommand { get; }
         public ICommand SaveTaxPayerCommand { get; }
+
+        protected override void OnSearchStringChanged()
+        {
+            if (string.IsNullOrWhiteSpace(SearchString))
+            {
+                CollectionFiltered = Collection;
+                return;
+            }
+
+            if (SearchString.IsNumeric())
+            {
+                CollectionFiltered = new ObservableCollection<TaxPayerVM>(
+                    Collection.Where(tp => tp.TaxNumber.Contains(SearchString)));
+            }
+            else
+            {
+                var lowerSearch = SearchString.ToLower();
+                CollectionFiltered = new ObservableCollection<TaxPayerVM>(
+                    Collection.Where(tp => tp.Title.ToLower().Contains(lowerSearch)));
+            }
+        }
+
+        protected override void OnSelectedItemChanging(TaxPayerVM? newSelectedItem)
+        {
+            if (_selectedItem != null)
+            {
+                _selectedItem.ErrorsChanged -= OnSelectedItemErrorsChanged;
+            }
+        }
+
+        protected override void OnSelectedItemChanged(TaxPayerVM? oldSelectedItem)
+        {
+            if (_selectedItem != null)
+            {
+                _selectedItem.ErrorsChanged += OnSelectedItemErrorsChanged;
+            }
+            Status = string.Empty;
+            RaiseCommandsCanExecuteChanged();
+        }
 
         private void OnSelectedItemErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {
@@ -95,7 +106,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             if (taxPayer == null)
                 return;
 
-            TaxPayers.Add(taxPayer);
+            CollectionFiltered.Add(taxPayer);
             SelectedItem = taxPayer;
             await SaveCurrentAsync();
         }
@@ -105,10 +116,10 @@ namespace VergiNoDogrula.WPF.ViewModels
             try
             {
                 var taxPayers = await _repository.GetAllAsync();
-                TaxPayers.Clear();
+                CollectionFiltered.Clear();
                 foreach (var taxPayer in taxPayers)
                 {
-                    TaxPayers.Add(new TaxPayerVM(taxPayer));
+                    CollectionFiltered.Add(new TaxPayerVM(taxPayer));
                 }
             }
             catch (Exception ex)
@@ -148,7 +159,7 @@ namespace VergiNoDogrula.WPF.ViewModels
                 var deleted = await _repository.DeleteAsync(SelectedItem.TaxNumber);
                 if (deleted)
                 {
-                    TaxPayers.Remove(SelectedItem);
+                    CollectionFiltered.Remove(SelectedItem);
                     SelectedItem = null;
                     Status = "Kayıt başarıyla silindi.";
                 }

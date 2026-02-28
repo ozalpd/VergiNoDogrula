@@ -93,7 +93,7 @@ public partial class AddTaxPayerDialog : Window
 
         if (TaxPayerCollection != null)
         {
-            if (TaxPayerCollection.TaxPayers.Any(t => t.TaxNumber.Equals(taxNumber)))
+            if (TaxPayerCollection.Collection.Any(t => t.TaxNumber.Equals(taxNumber)))
             {
                 ErrorMessage.Text = "Bu vergi numarası zaten mevcut.";
                 return false;

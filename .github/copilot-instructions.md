@@ -44,6 +44,7 @@ VergiNoDogrula/                       # Root / solution directory
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer; validates via exception catching
 │   │   └── TaxPayerCollectionVM.cs  # ObservableCollection<TaxPayerVM> + commands + repository integration
 │   ├── Resources/
+│   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared styles (DisabledWhenNullTextBoxStyle)
 │   ├── MainWindow.xaml / .xaml.cs   # Main UI; DataContext = TaxPayerCollectionVM
 │   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml and persists app settings on exit

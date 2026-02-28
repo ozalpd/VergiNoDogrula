@@ -82,6 +82,7 @@ VergiNoDogrula/
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer model
 │   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository
 │   ├── Resources/
+│   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared WPF styles
 │   ├── MainWindow.xaml / .xaml.cs   # Main application window
 │   └── App.xaml / .xaml.cs          # Application entry point, resource merge, settings save on exit

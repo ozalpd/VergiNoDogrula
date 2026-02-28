@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using VergiNoDogrula.Data;
+using VergiNoDogrula.WPF.Models;
 using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF
@@ -10,20 +11,34 @@ namespace VergiNoDogrula.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly AppSettings _appSettings = AppSettings.GetAppSettings();
+
         public MainWindow()
         {
-            InitializeDataContext();
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
         }
 
-        private async void InitializeDataContext()
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var appDataPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "VergiNoDogrula");
-            Directory.CreateDirectory(appDataPath);
+            Loaded -= MainWindow_Loaded;
 
-            var databasePath = Path.Combine(appDataPath, "taxpayers.db");
+            try
+            {
+                await InitializeDataContextAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task InitializeDataContextAsync()
+        {
+            string databasePath = _appSettings.DatabasePath;
+            string backupDir = _appSettings.BackupFolder;
+            uint backupInterval = _appSettings.AutoBackupIntervalMinutes;
+
             var repository = new SqliteTaxPayerRepository(databasePath);
             var viewModel = new TaxPayerCollectionVM(repository);
 

@@ -5,55 +5,71 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VergiNoDogrula.WPF"
         mc:Ignorable="d"
-        Title="VergiNo ve TCKN Doğrula" Height="600" Width="800">
+        Title="VergiNo ve TCKN Doğrula"
+        Height="600" MinHeight="400" Width="800" MinWidth="600">
     <Grid Margin="8,8,8,8">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="32" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="8" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="18" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label  Grid.Column="0"
-                Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0,4,0,0" />
-        <TextBox Grid.Column="1" Margin="4,4,8,0" VerticalAlignment="Top"
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal">
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
+                ToolTip="Yeni bir mükellef eklemek için tıklayın"
+                Command="{Binding AddTaxPayerCommand}"
+                CommandParameter="{Binding}"
+                AutomationProperties.Name="Ekle">
+                <Viewbox Width="14" Height="14">
+                    <Path Fill="Black" Data="{StaticResource plus-circle}"/>
+                </Viewbox>
+            </Button>
+
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
+                ToolTip="Seçili mükellefi kaydetmek için tıklayın"
+                Command="{Binding SaveTaxPayerCommand}"
+                CommandParameter="{Binding}"
+                AutomationProperties.Name="Kaydet">
+                <Viewbox Width="14" Height="14">
+                    <Path Fill="#00008F" Data="{StaticResource floppy}"/>
+                </Viewbox>
+            </Button>
+
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
+                ToolTip="Seçili mükellefi silmek için tıklayın"
+                Command="{Binding DeleteTaxPayerCommand}"
+                CommandParameter="{Binding}"
+                AutomationProperties.Name="Sil">
+                <Viewbox Width="14" Height="14">
+                    <Path Fill="Black" Data="{StaticResource trash3}"/>
+                </Viewbox>
+            </Button>
+        </StackPanel>
+
+        <Label Grid.Column="0" Grid.Row="1" Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0,4,0,0" />
+        <TextBox Grid.Column="1" Grid.Row="1" Margin="4,4,8,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.TaxNumber, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}" />
 
-        <Label  Grid.Column="0" Grid.Row="2" 
-                Content="Ünvan:" VerticalAlignment="Top" Margin="0,4,0,0" />
-        <TextBox Grid.Column="1" Grid.Row="2"  Margin="4,4,8,0" VerticalAlignment="Top"
+        <Label Grid.Column="0" Grid.Row="3" Content="Ünvan:" VerticalAlignment="Top" Margin="0,4,0,0" />
+        <TextBox Grid.Column="1" Grid.Row="3"  Margin="4,4,8,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>
 
-        <Button Grid.RowSpan="2" Grid.Column="2" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
-                Content="Ekle" 
-                Command="{Binding AddTaxPayerCommand}"
-                CommandParameter="{Binding}" />
-
-        <Button Grid.RowSpan="2" Grid.Column="3" Margin="0,4,4,0" VerticalAlignment="Top" Height="24"
-                Content="Kaydet" 
-                Command="{Binding SaveTaxPayerCommand}"
-                CommandParameter="{Binding}" />
-
-        <Button Grid.RowSpan="2" Grid.Column="4" Margin="0,4,0,0" VerticalAlignment="Top" Height="24"
-                Content="Sil" 
-                Command="{Binding DeleteTaxPayerCommand}"
-                CommandParameter="{Binding}" />
-
-        <DataGrid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,0,8,0"
+        <DataGrid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,0,8,0"
                   ItemsSource="{Binding TaxPayers}" 
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"

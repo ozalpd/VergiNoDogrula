@@ -2,6 +2,15 @@
 
 A WPF desktop application for validating Turkish tax identification numbers — **Vergi Kimlik Numarası (VKN)** and **TC Kimlik Numarası (TCKN)**.
 
+## Third-Party Assets
+
+- This project uses icon paths derived from **Bootstrap Icons**.
+- Source: `https://icons.getbootstrap.com`
+- Project repository: `https://github.com/twbs/icons`
+- Version: `v1.13.1`
+- License: `MIT`
+- SPDX License Identifier: `MIT`
+
 ## Features
 
 - **VKN Validation** — Validates 10-digit Turkish corporate tax identification numbers using the official checksum algorithm.

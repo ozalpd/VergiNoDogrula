@@ -99,6 +99,14 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 
 ## Key Conventions
 
+### Third-Party Asset Attribution
+- Bootstrap icon geometry data in `VergiNoDogrula.WPF/Resources/BootstrapIcons.xaml` is derived from Bootstrap Icons.
+- Source URL must be documented in project docs and relevant resource files: `https://icons.getbootstrap.com`.
+- Keep attribution references to the Bootstrap Icons repository and license:
+  - `https://github.com/twbs/icons`
+  - `MIT`
+- When adding or regenerating icon geometries, do not remove existing attribution notes from `README.md` or `BootstrapIcons.xaml`.
+
 ### Separation of Concerns
 - **Never** place validation or business logic in the WPF project.
 - **Never** place data-access logic in the WPF project. The repository interface and implementation live in the business-logic layer.

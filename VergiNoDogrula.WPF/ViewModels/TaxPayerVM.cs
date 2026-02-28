@@ -63,7 +63,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             ValidateTitle(Title);
         }
 
-        private void ValidateTaxNumber(string value)
+        public void ValidateTaxNumber(string value)
         {
             ClearErrors(nameof(TaxNumber));
             try
@@ -76,7 +76,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             }
         }
 
-        private void ValidateTitle(string value)
+        public void ValidateTitle(string value)
         {
             ClearErrors(nameof(Title));
             try

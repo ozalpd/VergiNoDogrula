@@ -24,19 +24,34 @@ public partial class AddTaxPayerDialog : Window
 
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
-        _viewModel.TaxNumber = TaxNumberTextBox.Text;
-        _viewModel.Title = TitleTextBox.Text;
-        _viewModel.Validate();
+        ValidateVM();
 
         if (_viewModel.HasErrors)
-        {
-            ErrorMessage.Text = string.Join("\n", GetAllErrors(_viewModel));
             return;
-        }
 
         Result = _viewModel;
         DialogResult = true;
         Close();
+    }
+
+    private void TaxNumberTextBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+        _viewModel.TaxNumber = TaxNumberTextBox.Text;
+        ValidateVM();
+    }
+
+    private void TitleTextBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+        _viewModel.Title = TitleTextBox.Text;
+        ValidateVM();
+    }
+
+    private void ValidateVM()
+    {
+        if (_viewModel.HasErrors)
+        {
+            ErrorMessage.Text = string.Join("\n", GetAllErrors(_viewModel));
+        }
     }
 
     private void OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

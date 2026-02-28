@@ -22,11 +22,11 @@
 
         <!-- TaxNumber Label -->
         <Label Grid.Row="0" Grid.Column="0" Content="Vergi No:"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="TaxNumberTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged" PreviewTextInput="TaxNumberTextBox_PreviewTextInput" />
+        <TextBox Grid.Row="0" Grid.Column="1" Name="TaxNumberTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged" PreviewTextInput="TaxNumberTextBox_PreviewTextInput" LostFocus="TaxNumberTextBox_LostFocus" />
 
         <!-- Title Label -->
         <Label Grid.Row="1" Grid.Column="0" Content="Ünvan:"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Name="TitleTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="TitleTextBox" Margin="0,0,0,8" TextChanged="OnTextChanged" LostFocus="TitleTextBox_LostFocus"/>
 
         <!-- Error Messages -->
         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="ErrorMessage" 

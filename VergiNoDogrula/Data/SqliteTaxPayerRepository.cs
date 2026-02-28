@@ -11,6 +11,11 @@ namespace VergiNoDogrula.Data
         private readonly string _connectionString;
 
         /// <summary>
+        /// Gets the last data update time in local time.
+        /// </summary>
+        public DateTime? LastUpdateTime { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of SqliteTaxPayerRepository with the specified database path.
         /// </summary>
         /// <param name="databasePath">The full path to the SQLite database file.</param>
@@ -33,6 +38,24 @@ namespace VergiNoDogrula.Data
                     TaxNumber TEXT NOT NULL UNIQUE
                 )";
             command.ExecuteNonQuery();
+
+            var metadataCommand = connection.CreateCommand();
+            metadataCommand.CommandText = @"
+                CREATE TABLE IF NOT EXISTS DatabaseMetadata (
+                    Id INTEGER PRIMARY KEY CHECK (Id = 1),
+                    LastUpdateUtc TEXT NOT NULL
+                );
+
+                INSERT INTO DatabaseMetadata (Id, LastUpdateUtc)
+                VALUES (1, @lastUpdateUtc)
+                ON CONFLICT(Id) DO NOTHING;";
+            metadataCommand.Parameters.AddWithValue("@lastUpdateUtc", string.Empty);
+            metadataCommand.ExecuteNonQuery();
+
+            var readMetadataCommand = connection.CreateCommand();
+            readMetadataCommand.CommandText = "SELECT LastUpdateUtc FROM DatabaseMetadata WHERE Id = 1";
+            var lastUpdateUtc = readMetadataCommand.ExecuteScalar() as string;
+            LastUpdateTime = ToLocalDateTime(lastUpdateUtc);
         }
 
         public async Task<IEnumerable<TaxPayer>> GetAllAsync()
@@ -69,6 +92,7 @@ namespace VergiNoDogrula.Data
             command.Parameters.AddWithValue("@taxNumber", taxPayer.TaxNumber);
 
             await command.ExecuteNonQueryAsync();
+            await LastUpdateUtcAsync(connection);
         }
 
         public async Task<bool> DeleteAsync(string taxNumber)
@@ -81,6 +105,7 @@ namespace VergiNoDogrula.Data
             command.Parameters.AddWithValue("@taxNumber", taxNumber);
 
             var rowsAffected = await command.ExecuteNonQueryAsync();
+            await LastUpdateUtcAsync(connection);
             return rowsAffected > 0;
         }
 
@@ -94,14 +119,39 @@ namespace VergiNoDogrula.Data
             command.Parameters.AddWithValue("@taxNumber", taxNumber);
 
             using var reader = await command.ExecuteReaderAsync();
+            TaxPayer? result = null;
             if (await reader.ReadAsync())
             {
                 var title = reader.GetString(0);
                 var taxNumberValue = reader.GetString(1);
-                return new TaxPayer(title, taxNumberValue);
+                result = new TaxPayer(title, taxNumberValue);
             }
 
-            return null;
+            return result;
+        }
+
+        private async Task LastUpdateUtcAsync(SqliteConnection connection)
+        {
+            var nowUtc = DateTimeOffset.UtcNow;
+
+            var metadataCommand = connection.CreateCommand();
+            metadataCommand.CommandText = @"
+                UPDATE DatabaseMetadata
+                SET LastUpdateUtc = @lastUpdateUtc
+                WHERE Id = 1";
+            metadataCommand.Parameters.AddWithValue("@lastUpdateUtc", nowUtc.ToString("O"));
+
+            await metadataCommand.ExecuteNonQueryAsync();
+            LastUpdateTime = nowUtc.ToLocalTime().DateTime;
+        }
+
+        private static DateTime? ToLocalDateTime(string? utcValue)
+        {
+            DateTime? dateTime = null;
+            if (DateTimeOffset.TryParse(utcValue, out var parsedUtc))
+                dateTime = parsedUtc.ToLocalTime().DateTime;
+
+            return dateTime;
         }
     }
 }

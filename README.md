@@ -8,6 +8,8 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
 - **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
 - **SQLite Persistence** — Taxpayer records are stored locally in a SQLite database at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
+- **Metadata Tracking** — CUD operations update `DatabaseMetadata.LastUpdateUtc`; repository exposes `LastUpdateTime` in local time.
+- **App Settings Persistence** — Settings are stored in `%APPDATA%\VergiNoDogrula\appsettings.json` and persisted on application exit.
 - **Real-time Error Feedback** — Inline validation errors displayed via red borders and descriptive messages.
 
 ## Screenshots
@@ -49,7 +51,7 @@ VergiNoDogrula/
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
 │   ├── Data/
 │   │   ├── ITaxPayerRepository.cs    # Repository interface for CRUD operations
-│   │   └── SqliteTaxPayerRepository.cs # SQLite-backed implementation
+│   │   └── SqliteTaxPayerRepository.cs # SQLite-backed implementation + DatabaseMetadata tracking
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
 │   │   └── TaxPayer.cs              # Concrete model with setter validation
@@ -63,6 +65,8 @@ VergiNoDogrula/
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
+│   ├── Models/
+│   │   └── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
@@ -71,7 +75,7 @@ VergiNoDogrula/
 │   ├── Resources/
 │   │   └── Styles.xaml              # Shared WPF styles
 │   ├── MainWindow.xaml / .xaml.cs   # Main application window
-│   └── App.xaml / .xaml.cs          # Application entry point
+│   └── App.xaml / .xaml.cs          # Application entry point, resource merge, settings save on exit
 └── VergiNoDogrula.sln
 ```
 
@@ -87,7 +91,7 @@ A plain .NET class library with **no UI dependencies**. Contains:
 - **`TaxPayer`** — Concrete model. Setters guard against invalid input by throwing `ArgumentNullException` / `ArgumentException`. Implements `IEquatable<TaxPayer>` based on `TaxNumber`.
 - **`ValidateExtensions`** — Pure, thread-safe extension methods implementing the official Turkish VKN (10-digit) and TCKN (11-digit) checksum algorithms.
 - **`ITaxPayerRepository`** — Repository interface defining async CRUD operations (`GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`).
-- **`SqliteTaxPayerRepository`** — SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses UPSERT semantics for save operations.
+- **`SqliteTaxPayerRepository`** — SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses UPSERT semantics for save operations and tracks CUD timestamps in `DatabaseMetadata`.
 
 ### Presentation Layer (`VergiNoDogrula.WPF`)
 
@@ -97,7 +101,8 @@ A WPF application following the **MVVM** pattern:
 - **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`.
 - **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
-- **Data** is loaded asynchronously on startup via `MainWindow.InitializeDataContext`.
+- **`AppSettings`** is loaded as a singleton and persisted at application shutdown.
+- **Data** is loaded asynchronously on startup via `MainWindow` initialization.
 
 ## Validation Rules
 
@@ -107,6 +112,11 @@ A WPF application following the **MVVM** pattern:
 | **TCKN** (National ID) | 11 digits | Two-stage modular arithmetic checksum; first digit must not be zero |
 
 Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumber` method automatically dispatches to the correct algorithm based on the length of the input string.
+
+## Data Locations
+
+- **SQLite database**: `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`
+- **App settings**: `%APPDATA%\VergiNoDogrula\appsettings.json`
 
 ## Technology Stack
 

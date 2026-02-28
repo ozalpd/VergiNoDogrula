@@ -22,7 +22,7 @@ VergiNoDogrula/                       # Root / solution directory
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
 │   ├── Data/
 │   │   ├── ITaxPayerRepository.cs    # Repository interface: GetAll, Save, Delete, GetByTaxNumber
-│   │   └── SqliteTaxPayerRepository.cs # SQLite implementation of ITaxPayerRepository
+│   │   └── SqliteTaxPayerRepository.cs # SQLite implementation of ITaxPayerRepository + DatabaseMetadata tracking
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
 │   │   └── TaxPayer.cs              # Concrete model with property-level validation
@@ -36,6 +36,8 @@ VergiNoDogrula/                       # Root / solution directory
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and OK button state management
+│   ├── Models/
+│   │   └── AppSettings.cs           # App-level settings (db path, backup folder/interval, singleton load/save)
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base (error dictionary)
@@ -44,7 +46,7 @@ VergiNoDogrula/                       # Root / solution directory
 │   ├── Resources/
 │   │   └── Styles.xaml              # Shared styles (DisabledWhenNullTextBoxStyle)
 │   ├── MainWindow.xaml / .xaml.cs   # Main UI; DataContext = TaxPayerCollectionVM
-│   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml
+│   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml and persists app settings on exit
 └── VergiNoDogrula.sln
 ```
 
@@ -62,7 +64,7 @@ A .NET class library containing all validation rules, data models, and data acce
 | `Models/TaxPayer.cs` | Concrete model. Property setters throw `ArgumentNullException` / `ArgumentException` on invalid input. Implements `IEquatable<TaxPayer>` (equality by `TaxNumber`). |
 | `ValidateExtensions.cs` | Static extension methods for Turkish tax-number validation: 10-digit VKN and 11-digit TCKN algorithms. All methods are pure and thread-safe. |
 | `Data/ITaxPayerRepository.cs` | Repository interface defining async CRUD operations: `GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`. |
-| `Data/SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. |
+| `Data/SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. Tracks CUD metadata in `DatabaseMetadata` and exposes `LastUpdateTime` (local time). |
 
 ### Presentation Layer — `VergiNoDogrula.WPF`
 
@@ -81,6 +83,7 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
 | `MainWindow.xaml` | Grid layout with labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, "Ekle" (Add), "Kaydet" (Save), and "Sil" (Delete) buttons, and a `DataGrid`. |
+| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings, `LastBackupTime`). |
 
 ## Developer Workflow
 
@@ -92,6 +95,7 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | Data-access changes | Edit files inside `VergiNoDogrula/Data/` |
 | UI changes | Edit files inside `VergiNoDogrula.WPF/` |
 | Database location | `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db` (auto-created on first run) |
+| App settings location | `%APPDATA%\VergiNoDogrula\appsettings.json` |
 
 ## Key Conventions
 
@@ -146,6 +150,8 @@ The `TaxPayer` class validates properties by throwing exceptions from setters:
 - The application uses SQLite via `Microsoft.Data.Sqlite` for local data storage.
 - The database file is stored at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
 - `SqliteTaxPayerRepository` auto-creates the database and schema on first instantiation.
+- `SqliteTaxPayerRepository` also maintains a single-row `DatabaseMetadata` table with `LastUpdateUtc` (updated on CUD operations).
+- `LastUpdateTime` is exposed in local time by converting stored UTC metadata.
 - All repository operations are async (`Task`-based). Commands use `async void Execute` to bridge `ICommand` with async repository calls.
 - Save uses UPSERT semantics: existing records (matched by `TaxNumber`) are updated; new records are inserted.
 

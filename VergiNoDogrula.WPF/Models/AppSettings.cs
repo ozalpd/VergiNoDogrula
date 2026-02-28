@@ -17,7 +17,7 @@ namespace VergiNoDogrula.WPF.Models
             {
                 if (backupInterval == null || backupInterval == 0)
                 {
-                    backupInterval = 60; // Default to 60 minutes if not set
+                    backupInterval = 60;
                 }
                 return backupInterval.Value;
             }
@@ -32,7 +32,12 @@ namespace VergiNoDogrula.WPF.Models
             {
                 if (string.IsNullOrWhiteSpace(_backupDir))
                 {
-                    _backupDir = GetBackupFolderPath();
+                    _backupDir = GetDefaultBackupFolderPath();
+                }
+
+                if (!string.IsNullOrWhiteSpace(_backupDir) && !Directory.Exists(_backupDir))
+                {
+                    Directory.CreateDirectory(_backupDir);
                 }
                 return _backupDir;
             }
@@ -49,10 +54,15 @@ namespace VergiNoDogrula.WPF.Models
             {
                 if (string.IsNullOrWhiteSpace(_dbPath))
                 {
-                    var appDataPath = GetDatabaseFolderPath();
-                    Directory.CreateDirectory(appDataPath);
-                    _dbPath = Path.Combine(appDataPath, "taxpayers.db");
+                    _dbPath = Path.Combine(GetDefaultDatabaseFolderPath(), "taxpayers.db");
                 }
+
+                var dbDirPath = Path.GetDirectoryName(_dbPath);
+                if (!string.IsNullOrWhiteSpace(dbDirPath) && !Directory.Exists(dbDirPath))
+                {
+                    Directory.CreateDirectory(dbDirPath);
+                }
+
                 return _dbPath;
             }
 
@@ -60,24 +70,16 @@ namespace VergiNoDogrula.WPF.Models
         }
         string _dbPath = string.Empty;
 
-        private string GetBackupFolderPath()
-        {
-            if (string.IsNullOrWhiteSpace(_backupDir))
-                return Path.Combine(
-                       Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                       "VergiNoDogrula\\BackUp");
-            return _backupDir;
-        }
+        private static string GetDefaultBackupFolderPath() => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "VergiNoDogrula",
+            "BackUp");
 
-        public string GetDatabaseFolderPath()
-        {
-            if (string.IsNullOrWhiteSpace(_dbPath))
-                return Path.Combine(
-                       Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                       "VergiNoDogrula");
+        private static string GetDefaultDatabaseFolderPath() => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "VergiNoDogrula");
 
-            return Path.GetDirectoryName(_dbPath) ?? string.Empty;
-        }
+        public string GetDatabaseFolderPath() => Path.GetDirectoryName(DatabasePath) ?? string.Empty;
 
         public static AppSettings GetAppSettings()
         {

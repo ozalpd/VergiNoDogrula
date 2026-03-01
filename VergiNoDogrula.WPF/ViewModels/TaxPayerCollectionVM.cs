@@ -19,8 +19,9 @@ namespace VergiNoDogrula.WPF.ViewModels
 
             AddTaxPayerCommand = new AddTaxPayerCommand();
             CopyTaxNumberCommand = new CopyTaxNumberCommand();
-            SaveTaxPayerCommand = new SaveTaxPayerCommand();
+            EmptySearchStringCommand = new EmptySearchStringCommand();
             DeleteTaxPayerCommand = new DeleteTaxPayerCommand();
+            SaveTaxPayerCommand = new SaveTaxPayerCommand();
         }
 
 
@@ -38,6 +39,7 @@ namespace VergiNoDogrula.WPF.ViewModels
         public ICommand AddTaxPayerCommand { get; }
         public ICommand CopyTaxNumberCommand { get; }
         public ICommand DeleteTaxPayerCommand { get; }
+        public ICommand EmptySearchStringCommand { get; }
         public ICommand SaveTaxPayerCommand { get; }
 
         public bool IsSearching { get; private set; }

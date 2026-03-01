@@ -9,12 +9,12 @@
         Height="600" MinHeight="400" Width="800" MinWidth="600">
     <Grid Margin="8,8,8,8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="160" />
-            <ColumnDefinition Width="32" />
-            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="22" />
+            <ColumnDefinition Width="22" />
             <ColumnDefinition Width="96" />
-            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="22" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -67,7 +67,7 @@
             <TextBlock Text="{Binding Status}" FontSize="14" FontWeight="Bold" Margin="0" />
         </Border>
 
-        <TextBox x:Name="SearchTextBox" Grid.Column="1" Grid.Row="0" Margin="4,4,8,0" VerticalAlignment="Top"
+        <TextBox x:Name="SearchTextBox" Grid.Column="1" Grid.Row="0" Margin="4,4,0,0" VerticalAlignment="Top"
                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" />
         <TextBlock Text="Ara.." Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Margin="8,4,8,0"
                    Foreground="#989898" IsHitTestVisible="False">
@@ -81,23 +81,32 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
+        <Button Grid.Column="2" Grid.Row="0" Style="{StaticResource IconButtonStyle-22x18}"
+                ToolTip="Sorgu kutusunu temizle"
+                Command="{Binding EmptySearchStringCommand}"
+                CommandParameter="{Binding}"
+                AutomationProperties.Name="SorguKutusuTemizle">
+            <Viewbox Width="12" Height="12">
+                <Path Fill="Black" Data="{StaticResource x-circle}"/>
+            </Viewbox>
+        </Button>
         
         <Label Grid.Column="0" Grid.Row="2" Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0" />
-        <TextBox Grid.Column="1" Grid.Row="2" Margin="4,4,8,0" VerticalAlignment="Top"
+        <TextBox Grid.Column="1" Grid.Row="2" Margin="4,4,0,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.TaxNumber, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}" />
 
-        <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource IconButtonStyle-28x24}"
+        <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource IconButtonStyle-22x18}"
                 ToolTip="Vergi numarasını kopyala"
                 Command="{Binding CopyTaxNumberCommand}"
                 CommandParameter="{Binding}"
                 AutomationProperties.Name="VknKopyala">
-            <Viewbox Width="14" Height="14">
+            <Viewbox Width="12" Height="12">
                 <Path Fill="Black" Data="{StaticResource copy}"/>
             </Viewbox>
         </Button>
         <Label Grid.Column="0" Grid.Row="4" Content="Ünvan:" VerticalAlignment="Top" Margin="0" />
-        <TextBox Grid.Column="1" Grid.Row="4" Margin="4,4,8,0" VerticalAlignment="Top"
+        <TextBox Grid.Column="1" Grid.Row="4" Margin="4,4,0,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>

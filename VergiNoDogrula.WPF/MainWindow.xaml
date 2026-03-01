@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:VergiNoDogrula.WPF"
         mc:Ignorable="d"
         Title="VergiNo ve TCKN Doğrula"
-        Height="600" MinHeight="400" Width="800" MinWidth="600">
+        Height="400" MinHeight="400"
+        Width="600" MinWidth="600" MaxWidth="600">
     <Grid Margin="8,8,8,8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -63,7 +64,7 @@
             </Button>
         </StackPanel>
 
-        <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" BorderBrush="#dbdbdb" BorderThickness="1" Margin="0,2,0,2" Padding="4">
+        <Border Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="1" BorderBrush="#dbdbdb" BorderThickness="1" Margin="0,2,0,2" Padding="4">
             <TextBlock Text="{Binding Status}" FontSize="14" FontWeight="Bold" Margin="0" />
         </Border>
 
@@ -111,7 +112,7 @@
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>
 
-        <DataGrid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="6" Grid.RowSpan="3" Margin="0"
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="6" Grid.RowSpan="3" Margin="0"
                   ItemsSource="{Binding CollectionFiltered}" 
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"

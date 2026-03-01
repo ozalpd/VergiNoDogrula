@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\tax-icon-01.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\tax-icon-01.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VergiNoDogrula\VergiNoDogrula.csproj" />

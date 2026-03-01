@@ -88,13 +88,13 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
 ```
 VergiNoDogrula/
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
-│   ├── Data/
-│   │   ├── ITaxPayerRepository.cs    # Repository interface for CRUD operations
-│   │   └── SqliteTaxPayerRepository.cs # SQLite-backed implementation + DatabaseMetadata tracking
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
 │   │   └── TaxPayer.cs              # Concrete model with setter validation
 │   └── ValidateExtensions.cs        # Extension methods for VKN / TCKN validation
+├── VergiNoDogrula.Data/              # Data-access class library (net10.0)
+│   ├── ITaxPayerRepository.cs        # Repository interface for CRUD operations
+│   └── SqliteTaxPayerRepository.cs   # SQLite-backed implementation + DatabaseMetadata tracking
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
@@ -123,17 +123,23 @@ VergiNoDogrula/
 
 ## Architecture
 
-The solution follows an **N-tier** architecture with a strict separation between business logic and presentation.
+The solution follows an **N-tier** architecture with strict separation between business logic, data access, and presentation.
 
 ### Business-Logic Layer (`VergiNoDogrula`)
 
-A plain .NET class library with **no UI dependencies**. Contains:
+A plain .NET class library with **no UI or data-access dependencies**. Contains:
 
 - **`ITaxPayer`** — Contract defining `Title` and `TaxNumber` properties.
 - **`TaxPayer`** — Concrete model. Setters guard against invalid input by throwing `ArgumentNullException` / `ArgumentException`. Implements `IEquatable<TaxPayer>` based on `TaxNumber`.
 - **`ValidateExtensions`** — Pure, thread-safe extension methods implementing the official Turkish VKN (10-digit) and TCKN (11-digit) checksum algorithms.
+
+### Data-Access Layer (`VergiNoDogrula.Data`)
+
+A dedicated .NET class library for persistence. Contains:
+
 - **`ITaxPayerRepository`** — Repository interface defining async CRUD operations (`GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`).
 - **`SqliteTaxPayerRepository`** — SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses UPSERT semantics for save operations and tracks CUD timestamps in `DatabaseMetadata`.
+- **`Microsoft.Data.Sqlite`** package reference — Kept in this project so the core library stays lean and persistence-agnostic.
 
 ### Presentation Layer (`VergiNoDogrula.WPF`)
 
@@ -178,7 +184,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 | UI Framework | WPF |
 | Language | C# 14.0 |
 | Local Database | SQLite via `Microsoft.Data.Sqlite` |
-| Build System | SDK-style projects, `dotnet` CLI |
+| Build System | SDK-style projects, `dotfiles` CLI |
 
 ## Contributing
 
@@ -188,7 +194,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 4. Push to the branch (`git push origin feature/my-feature`).
 5. Open a Pull Request.
 
-Please maintain the existing separation of concerns — validation logic belongs in the `VergiNoDogrula` library, not in the WPF project.
+Please maintain the existing separation of concerns — validation logic belongs in `VergiNoDogrula`, data-access logic belongs in `VergiNoDogrula.Data`, and UI logic belongs in `VergiNoDogrula.WPF`.
 
 ## License
 

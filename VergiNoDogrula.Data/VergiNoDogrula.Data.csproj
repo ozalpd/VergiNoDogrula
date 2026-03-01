@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VergiNoDogrula\VergiNoDogrula.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
+  </ItemGroup>
+
 </Project>

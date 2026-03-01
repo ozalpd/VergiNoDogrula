@@ -11,7 +11,7 @@ This document provides guidance for AI coding agents working on the `VergiNoDogr
 | Language | C# 14.0 |
 | Build System | SDK-style projects, `dotnet` CLI |
 
-Both projects enable `ImplicitUsings` and `Nullable`. All new code **must** be nullable-aware and avoid adding explicit `using` directives that are already covered by implicit usings.
+All projects enable `ImplicitUsings` and `Nullable`. All new code **must** be nullable-aware and avoid adding explicit `using` directives that are already covered by implicit usings.
 
 ## Solution Structure
 
@@ -20,13 +20,13 @@ VergiNoDogrula/                       # Root / solution directory
 ├── .github/
 │   └── copilot-instructions.md       # This file
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
-│   ├── Data/
-│   │   ├── ITaxPayerRepository.cs    # Repository interface: GetAll, Save, Delete, GetByTaxNumber
-│   │   └── SqliteTaxPayerRepository.cs # SQLite implementation of ITaxPayerRepository + DatabaseMetadata tracking
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
 │   │   └── TaxPayer.cs              # Concrete model with property-level validation
 │   └── ValidateExtensions.cs        # Extension methods: IsValidVKN, IsValidTCKN, IsValidTaxNumber, IsSameTaxNumbers
+├── VergiNoDogrula.Data/              # Data-access class library (net10.0)
+│   ├── ITaxPayerRepository.cs        # Repository interface: GetAll, Save, Delete, GetByTaxNumber
+│   └── SqliteTaxPayerRepository.cs   # SQLite implementation of ITaxPayerRepository + DatabaseMetadata tracking
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation with public RaiseCanExecuteChanged
@@ -55,23 +55,30 @@ VergiNoDogrula/                       # Root / solution directory
 
 ## Architecture Overview
 
-The solution follows an N-tier architecture with strict separation between the presentation and business-logic layers.
+The solution follows an N-tier architecture with strict separation between presentation, business-logic, and data-access layers.
 
 ### Business-Logic Layer — `VergiNoDogrula`
 
-A .NET class library containing all validation rules, data models, and data access. **No WPF or UI dependencies.** Depends on `Microsoft.Data.Sqlite` for persistence.
+A .NET class library containing validation rules and domain models. **No WPF or data-access dependencies.**
 
 | File | Purpose |
 |---|---|
 | `Models/ITaxPayer.cs` | Contract for a tax-paying entity (`Title`, `TaxNumber`). |
 | `Models/TaxPayer.cs` | Concrete model. Property setters throw `ArgumentNullException` / `ArgumentException` on invalid input. Implements `IEquatable<TaxPayer>` (equality by `TaxNumber`). |
 | `ValidateExtensions.cs` | Static extension methods for Turkish tax-number validation: 10-digit VKN and 11-digit TCKN algorithms. All methods are pure and thread-safe. |
-| `Data/ITaxPayerRepository.cs` | Repository interface defining async CRUD operations: `GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`. |
-| `Data/SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. Tracks CUD metadata in `DatabaseMetadata` and exposes `LastUpdateTime` (local time). |
+
+### Data-Access Layer — `VergiNoDogrula.Data`
+
+A .NET class library dedicated to persistence. Depends on `Microsoft.Data.Sqlite`.
+
+| File | Purpose |
+|---|---|
+| `ITaxPayerRepository.cs` | Repository interface defining async CRUD operations: `GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`. |
+| `SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. Tracks CUD metadata in `DatabaseMetadata` and exposes `LastUpdateTime` (local time). |
 
 ### Presentation Layer — `VergiNoDogrula.WPF`
 
-A WPF desktop application. References the `VergiNoDogrula` library.
+A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`.
 
 | Folder / File | Purpose |
 |---|---|
@@ -97,7 +104,7 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | Build | `dotnet build` from the repository root |
 | Run | Launch `VergiNoDogrula.WPF` (the startup project) from Visual Studio or `dotnet run --project VergiNoDogrula.WPF` |
 | Validation-logic changes | Edit files inside `VergiNoDogrula/` |
-| Data-access changes | Edit files inside `VergiNoDogrula/Data/` |
+| Data-access changes | Edit files inside `VergiNoDogrula.Data/` |
 | UI changes | Edit files inside `VergiNoDogrula.WPF/` |
 | Database location | `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db` (auto-created on first run) |
 | App settings location | `%APPDATA%\VergiNoDogrula\appsettings.json` |
@@ -114,7 +121,7 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 
 ### Separation of Concerns
 - **Never** place validation or business logic in the WPF project.
-- **Never** place data-access logic in the WPF project. The repository interface and implementation live in the business-logic layer.
+- **Never** place data-access logic in the WPF project. The repository interface and implementation live in `VergiNoDogrula.Data`.
 - ViewModels delegate to the model layer for validation; they only translate exceptions into `INotifyDataErrorInfo` entries.
 - ViewModels delegate to the repository for persistence; they call repository methods and handle exceptions with user-facing messages.
 
@@ -179,8 +186,8 @@ The `TaxPayer` class validates properties by throwing exceptions from setters:
 
 ## Adding New Features — Checklist
 
-1. **New model property** → Add to `ITaxPayer`, implement with setter validation in `TaxPayer`, expose in `TaxPayerVM` with `try/catch` validation, update `SqliteTaxPayerRepository` schema and queries, bind in XAML.
+1. **New model property** → Add to `ITaxPayer`, implement with setter validation in `TaxPayer`, expose in `TaxPayerVM` with `try/catch` validation, update repository schema/queries in `VergiNoDogrula.Data`, bind in XAML.
 2. **New command** → Inherit from `AbstractCommand`, register in the appropriate collection ViewModel, add `RaiseCanExecuteChanged` calls in the ViewModel where needed, bind via `Command` / `CommandParameter` in XAML.
 3. **New style / resource** → Add to `Resources/Styles.xaml`; it is already merged in `App.xaml`.
 4. **New validation rule** → Implement as an extension method in `ValidateExtensions.cs`; call from the model setter.
-5. **New repository method** → Add to `ITaxPayerRepository`, implement in `SqliteTaxPayerRepository`, call from the appropriate ViewModel method.
+5. **New repository method** → Add to `ITaxPayerRepository`, implement in `SqliteTaxPayerRepository` under `VergiNoDogrula.Data`, call from the appropriate ViewModel method.

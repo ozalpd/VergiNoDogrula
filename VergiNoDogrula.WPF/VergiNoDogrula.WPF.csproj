@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VergiNoDogrula\VergiNoDogrula.csproj" />
+    <ProjectReference Include="..\VergiNoDogrula.Data\VergiNoDogrula.Data.csproj" />
   </ItemGroup>
 
 </Project>

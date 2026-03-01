@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using VergiNoDogrula.Models;
+using System.Globalization;
 
 namespace VergiNoDogrula.Data
 {
@@ -66,7 +67,7 @@ namespace VergiNoDogrula.Data
             await connection.OpenAsync();
 
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT Title, TaxNumber FROM TaxPayers ORDER BY Title COLLATE NOCASE";
+            command.CommandText = "SELECT Title, TaxNumber FROM TaxPayers";
 
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -76,7 +77,7 @@ namespace VergiNoDogrula.Data
                 taxPayers.Add(new TaxPayer(title, taxNumber));
             }
 
-            return taxPayers;
+            return taxPayers.OrderBy(tp => tp.Title, StringComparer.Create(CultureInfo.GetCultureInfo("tr-TR"), ignoreCase: true));
         }
 
         public async Task SaveAsync(TaxPayer taxPayer)

@@ -1,11 +1,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using VergiNoDogrula.Data;
 using VergiNoDogrula.Models;
 using VergiNoDogrula.WPF.Commands;
 using VergiNoDogrula.WPF.Helpers;
+using VergiNoDogrula.WPF.Models;
 
 namespace VergiNoDogrula.WPF.ViewModels
 {
@@ -157,6 +159,21 @@ namespace VergiNoDogrula.WPF.ViewModels
 
             OnSearchStringChanged();
         }
+        private void PlaySuccessSound()
+        {
+            var settings = AppSettings.GetAppSettings();
+            if (settings.MuteAudio)
+                return;
+
+            try
+            {
+                SystemSounds.Beep.Play();
+            }
+            catch
+            {
+                // Silently fail; don't crash the app
+            }
+        }
 
         public async Task SaveCurrentAsync()
         {
@@ -168,6 +185,7 @@ namespace VergiNoDogrula.WPF.ViewModels
                 var taxPayer = new TaxPayer(SelectedItem.Title, SelectedItem.TaxNumber);
                 await _repository.SaveAsync(taxPayer);
                 Status = "Mükellef bilgisi başarıyla kaydedildi.";
+                PlaySuccessSound();
             }
             catch (Exception ex)
             {

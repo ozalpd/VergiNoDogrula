@@ -47,7 +47,7 @@ public partial class AddTaxPayerDialog : Window
 
     private void TitleTextBox_LostFocus(object sender, RoutedEventArgs e)
     {
-        _viewModel.Title = TitleTextBox.Text;
+        _viewModel.Title = TitleTextBox.Text.Trim();
         ValidateVM();
     }
 

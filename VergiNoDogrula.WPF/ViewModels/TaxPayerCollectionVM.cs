@@ -40,15 +40,22 @@ namespace VergiNoDogrula.WPF.ViewModels
         public ICommand DeleteTaxPayerCommand { get; }
         public ICommand SaveTaxPayerCommand { get; }
 
+        public bool IsSearching { get; private set; }
+        public bool IsSearchNumeric { get; private set; }
+
         protected override void OnSearchStringChanged()
         {
             if (string.IsNullOrWhiteSpace(SearchString))
             {
                 CollectionFiltered = Collection;
+                IsSearchNumeric = false;
+                IsSearching = false;
                 return;
             }
 
-            if (SearchString.IsNumeric())
+            IsSearching = true;
+            IsSearchNumeric = SearchString.IsNumeric();
+            if (IsSearchNumeric)
             {
                 CollectionFiltered = new ObservableCollection<TaxPayerVM>(
                     Collection.Where(tp => tp.TaxNumber.Contains(SearchString)));
@@ -116,7 +123,16 @@ namespace VergiNoDogrula.WPF.ViewModels
             SelectedItem = taxPayer;
             await SaveCurrentAsync();
 
-            OnSearchStringChanged();
+            if (string.IsNullOrWhiteSpace(SearchString))
+            {
+                CollectionFiltered = Collection;
+            }
+            else
+            {
+                var search = SearchString;
+                SearchString = string.Empty;
+                SearchString = search;
+            }
         }
 
         public async Task LoadDataAsync()

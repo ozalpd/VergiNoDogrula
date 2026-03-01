@@ -19,6 +19,11 @@ public partial class AddTaxPayerDialog : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        if (TaxPayerCollection != null && TaxPayerCollection.IsSearchNumeric)
+        {
+            TaxNumberTextBox.Text = TaxPayerCollection.SearchString;
+        }
+
         TaxNumberTextBox.Focus();
     }
 

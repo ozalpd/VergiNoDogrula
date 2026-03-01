@@ -47,12 +47,12 @@ internal abstract class AbstractCollectionVM<T> : AbstractViewModel
             _searchString = value;
             RaisePropertyChanged(nameof(SearchString));
             OnSearchStringChanged();
-            RaisePropertyChanged(nameof(CollectionFiltered));
             if (SelectedItem == null)
             {
                 if (CollectionFiltered.Count > 0)
                     SelectedItem = CollectionFiltered[0];
             }
+            RaisePropertyChanged(nameof(CollectionFiltered));
         }
     }
     private string? _searchString;

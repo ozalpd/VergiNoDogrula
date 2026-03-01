@@ -16,6 +16,8 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **VKN Validation** — Validates 10-digit Turkish corporate tax identification numbers using the official checksum algorithm.
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
 - **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
+- **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
+- **Clipboard Integration** — Copy taxpayer tax numbers to clipboard with a single click.
 - **SQLite Persistence** — Taxpayer records are stored locally in a SQLite database at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
 - **Metadata Tracking** — CUD operations update `DatabaseMetadata.LastUpdateUtc`; repository exposes `LastUpdateTime` in local time.
 - **App Settings Persistence** — Settings are stored in `%APPDATA%\VergiNoDogrula\appsettings.json` and persisted on application exit.
@@ -23,7 +25,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 
 ## Screenshots
 
-The main window provides text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), and **Sil** (Delete) buttons, and a DataGrid listing all entered taxpayer records.
+The main window provides a search box with placeholder text for filtering records, text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), **Sil** (Delete), and copy buttons, and a DataGrid listing all entered taxpayer records with an empty-state message ("Henüz kayıt yok") when no records exist.
 
 ## Prerequisites
 
@@ -53,6 +55,34 @@ dotnet run --project VergiNoDogrula.WPF
 
 Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogrula.WPF` set as the startup project.
 
+## Usage
+
+### Adding a Taxpayer
+1. Click the **Ekle** (Add/Plus icon) button
+2. Enter a valid 10-digit VKN or 11-digit TCKN
+3. Enter the taxpayer title/name
+4. Click OK (the button is disabled until both fields are valid and the tax number is unique)
+
+### Searching
+- Type numbers to search by tax number
+- Type text to search by title
+- The search filters in real-time as you type
+- Clear the search box to show all records
+
+### Editing
+1. Select a taxpayer from the DataGrid
+2. Modify the tax number or title in the text fields
+3. Click **Kaydet** (Save/Floppy disk icon) to persist changes
+
+### Deleting
+1. Select a taxpayer from the DataGrid
+2. Click **Sil** (Delete/Trash icon)
+3. Confirm the deletion
+
+### Copy Tax Number
+1. Select a taxpayer from the DataGrid
+2. The tax number is now available via the copy button or can be copied from the text field
+
 ## Solution Structure
 
 ```
@@ -69,6 +99,7 @@ VergiNoDogrula/
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
 │   │   ├── AddTaxPayerCommand.cs    # Opens AddTaxPayerDialog to create a new taxpayer
+│   │   ├── CopyTaxNumberCommand.cs  # Copies selected taxpayer's tax number to clipboard
 │   │   ├── SaveTaxPayerCommand.cs   # Persists the selected taxpayer to SQLite
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
 │   ├── Dialogs/
@@ -78,9 +109,10 @@ VergiNoDogrula/
 │   │   └── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
+│   │   ├── AbstractCollectionVM.cs  # Generic collection ViewModel base with search support
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer model
-│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository + search logic
 │   ├── Resources/
 │   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared WPF styles
@@ -113,6 +145,16 @@ A WPF application following the **MVVM** pattern:
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
 - **`AppSettings`** is loaded as a singleton and persisted at application shutdown.
 - **Data** is loaded asynchronously on startup via `MainWindow` initialization.
+
+#### UI Features
+
+- **Smart Search** — Numeric input filters by tax number, text input filters by title (case-insensitive).
+- **Placeholder Text** — Search box shows "Ara.." hint text that disappears on focus.
+- **Empty State** — DataGrid shows "Henüz kayıt yok" (No records yet) when the collection is empty.
+- **Status Bar** — Displays operation feedback (success/error messages, record counts).
+- **Icon Buttons** — Uses Bootstrap Icons for Add (plus-circle), Save (floppy), Delete (trash3) operations.
+- **Real-time Validation** — Input fields show validation errors with red borders and descriptive messages.
+- **Clipboard Support** — Copy taxpayer tax numbers to clipboard with a dedicated copy command.
 
 ## Validation Rules
 

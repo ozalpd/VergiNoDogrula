@@ -31,6 +31,7 @@ VergiNoDogrula/                       # Root / solution directory
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation with public RaiseCanExecuteChanged
 │   │   ├── AddTaxPayerCommand.cs    # Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it.
+│   │   ├── CopyTaxNumberCommand.cs  # Copies the selected taxpayer's tax number to clipboard. Enabled only when `SelectedItem` is non-null.
 │   │   ├── SaveTaxPayerCommand.cs   # Validates then persists the selected TaxPayerVM to SQLite
 │   │   └── DeleteTaxPayerCommand.cs # Deletes the selected TaxPayerVM from SQLite with confirmation
 │   ├── Dialogs/
@@ -40,13 +41,14 @@ VergiNoDogrula/                       # Root / solution directory
 │   │   └── AppSettings.cs           # App-level settings (db path, backup folder/interval, singleton load/save)
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
+│   │   ├── AbstractCollectionVM.cs  # Generic base for collection ViewModels; provides `Collection`, `CollectionFiltered`, `SelectedItem`, `SearchString` properties and abstract hooks for search/selection lifecycle.
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base (error dictionary)
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer; validates via exception catching
-│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection<TaxPayerVM> + commands + repository integration
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection<TaxPayerVM> + commands + repository integration + search logic
 │   ├── Resources/
 │   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared styles (DisabledWhenNullTextBoxStyle)
-│   ├── MainWindow.xaml / .xaml.cs   # Main UI; DataContext = TaxPayerCollectionVM
+│   ├── MainWindow.xaml / .xaml.cs   # Main UI; search box with focus-hiding placeholder, TextBoxes for selected item, icon buttons (Ekle/Save/Delete/Copy), DataGrid with empty-state template, status bar
 │   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml and persists app settings on exit
 └── VergiNoDogrula.sln
 ```
@@ -74,16 +76,18 @@ A WPF desktop application. References the `VergiNoDogrula` library.
 | Folder / File | Purpose |
 |---|---|
 | `ViewModels/AbstractViewModel.cs` | Base class providing `INotifyPropertyChanged` via `RaisePropertyChanged`. |
+| `ViewModels/AbstractCollectionVM.cs` | Generic base class for collection ViewModels. Provides `Collection` (ObservableCollection<T>), `CollectionFiltered` (filtered view), `SelectedItem`, and `SearchString` properties. Defines abstract hooks: `OnSearchStringChanged`, `OnSelectedItemChanging`, `OnSelectedItemChanged` for derived classes to implement filtering and selection lifecycle logic. |
 | `ViewModels/AbstractDataErrorInfoVM.cs` | Base class adding `INotifyDataErrorInfo` with an `_errors` dictionary, `AddError`, `ClearErrors`, and `GetErrors`. |
 | `ViewModels/TaxPayerVM.cs` | Wraps a `TaxPayer` model; validates by calling model setters in a `try/catch` and forwarding exception messages to the error dictionary. Exposes `Validate()` for on-demand (pre-save) validation. |
-| `ViewModels/TaxPayerCollectionVM.cs` | Owns `ObservableCollection<TaxPayerVM>`, `SelectedItem`, commands, and `ITaxPayerRepository`. Provides `LoadDataAsync`, `SaveCurrentAsync`, `DeleteSelectedAsync`. Subscribes to `SelectedItem.ErrorsChanged` to refresh command states. |
+| `ViewModels/TaxPayerCollectionVM.cs` | Owns `ObservableCollection<TaxPayerVM>`, `SelectedItem`, commands, and `ITaxPayerRepository`. Provides `LoadDataAsync`, `SaveCurrentAsync`, `DeleteSelectedAsync`. Subscribes to `SelectedItem.ErrorsChanged` to refresh command states. Implements smart search: numeric input filters by `TaxNumber` (contains), text input filters by `Title` (case-insensitive contains). |
 | `Commands/AbstractCommand.cs` | Base `ICommand` with public `RaiseCanExecuteChanged`. |
 | `Commands/AddTaxPayerCommand.cs` | Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it. |
+| `Commands/CopyTaxNumberCommand.cs` | Copies the selected taxpayer's tax number to the system clipboard. Enabled only when `SelectedItem` is non-null. |
 | `Commands/SaveTaxPayerCommand.cs` | Persists the selected `TaxPayerVM` to SQLite via the repository. Enabled only when `SelectedItem` is non-null and has no validation errors. |
 | `Commands/DeleteTaxPayerCommand.cs` | Deletes the selected `TaxPayerVM` from SQLite with a confirmation dialog. Enabled only when `SelectedItem` is non-null. |
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
-| `MainWindow.xaml` | Grid layout with labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, "Ekle" (Add), "Kaydet" (Save), and "Sil" (Delete) buttons, and a `DataGrid`. |
+| `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons for Ekle (Add/plus-circle), Kaydet (Save/floppy), Sil (Delete/trash3), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
 | `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings, `LastBackupTime`). |
 
 ## Developer Workflow
@@ -163,6 +167,15 @@ The `TaxPayer` class validates properties by throwing exceptions from setters:
 - `LastUpdateTime` is exposed in local time by converting stored UTC metadata.
 - All repository operations are async (`Task`-based). Commands use `async void Execute` to bridge `ICommand` with async repository calls.
 - Save uses UPSERT semantics: existing records (matched by `TaxNumber`) are updated; new records are inserted.
+
+## Search Functionality
+- `SearchString` property in `AbstractCollectionVM<T>` triggers filtering via the abstract `OnSearchStringChanged()` method.
+- `TaxPayerCollectionVM` implements smart search:
+  - **Numeric input** (detected via `IsNumeric()` extension) → filters by `TaxNumber` using `Contains()`.
+  - **Text input** → filters by `Title` using case-insensitive `Contains()`.
+- `CollectionFiltered` is an `ObservableCollection<TaxPayerVM>` bound to the DataGrid. When search is empty, it references the full `Collection`; otherwise it's a new filtered collection.
+- Search TextBox in `MainWindow.xaml` uses `UpdateSourceTrigger=PropertyChanged` for real-time filtering.
+- A placeholder TextBlock ("Ara..") overlays the search box and is hidden when the TextBox gains focus (via `DataTrigger` on `IsFocused` with `IsHitTestVisible=False` to allow click-through).
 
 ## Adding New Features — Checklist
 

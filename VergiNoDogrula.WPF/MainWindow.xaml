@@ -107,7 +107,7 @@
             </Viewbox>
         </Button>
         <Label Grid.Column="0" Grid.Row="4" Content="Ünvan:" VerticalAlignment="Top" Margin="0" />
-        <TextBox Grid.Column="1" Grid.Row="4" Margin="4,4,0,0" VerticalAlignment="Top"
+        <TextBox Grid.Column="1" Grid.ColumnSpan="7" Grid.Row="4" Margin="4,4,0,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>

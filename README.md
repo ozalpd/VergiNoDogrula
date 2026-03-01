@@ -176,6 +176,8 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 - **SQLite database**: `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`
 - **App settings**: `%APPDATA%\VergiNoDogrula\appsettings.json`
 
+> **Note:** The application uses Turkish culture (`tr-TR`) for sorting taxpayer titles to ensure correct alphabetical ordering of Turkish characters (ç, ğ, ı, ö, ş, ü).
+
 ## Technology Stack
 
 | Component | Technology |
@@ -184,7 +186,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 | UI Framework | WPF |
 | Language | C# 14.0 |
 | Local Database | SQLite via `Microsoft.Data.Sqlite` |
-| Build System | SDK-style projects, `dotfiles` CLI |
+| Build System | SDK-style projects, `dotnet` CLI |
 
 ## Contributing
 
@@ -198,4 +200,4 @@ Please maintain the existing separation of concerns — validation logic belongs
 
 ## License
 
-This project is provided as-is. See the repository for license details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

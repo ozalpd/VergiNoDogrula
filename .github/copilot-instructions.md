@@ -19,6 +19,7 @@ All projects enable `ImplicitUsings` and `Nullable`. All new code **must** be nu
 VergiNoDogrula/                       # Root / solution directory
 ├── .github/
 │   └── copilot-instructions.md       # This file
+├── LICENSE                           # MIT License
 ├── VergiNoDogrula/                   # Business-logic class library (net10.0)
 │   ├── Models/
 │   │   ├── ITaxPayer.cs              # Interface: Title, TaxNumber
@@ -66,6 +67,7 @@ A .NET class library containing validation rules and domain models. **No WPF or 
 | `Models/ITaxPayer.cs` | Contract for a tax-paying entity (`Title`, `TaxNumber`). |
 | `Models/TaxPayer.cs` | Concrete model. Property setters throw `ArgumentNullException` / `ArgumentException` on invalid input. Implements `IEquatable<TaxPayer>` (equality by `TaxNumber`). |
 | `ValidateExtensions.cs` | Static extension methods for Turkish tax-number validation: 10-digit VKN and 11-digit TCKN algorithms. All methods are pure and thread-safe. |
+
 
 ### Data-Access Layer — `VergiNoDogrula.Data`
 
@@ -118,6 +120,13 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
   - `https://github.com/twbs/icons`
   - `MIT`
 - When adding or regenerating icon geometries, do not remove existing attribution notes from `README.md` or `BootstrapIcons.xaml`.
+
+### Localization and Sorting
+- The application is designed for Turkish users and uses Turkish culture (`tr-TR`) for text operations.
+- `SqliteTaxPayerRepository.GetAllAsync()` sorts results using Turkish culture to ensure correct alphabetical ordering of Turkish characters (ç, ğ, ı, ö, ş, ü).
+- When implementing new sorting or string comparison features for user-facing text, always use `StringComparer.Create(CultureInfo.GetCultureInfo("tr-TR"), ignoreCase: true)`.
+- **SQLite queries should NOT use `COLLATE` for Turkish text**; sort in C# instead using Turkish culture to avoid incorrect ordering.
+- Numeric comparisons and non-user-facing data (e.g., tax numbers, IDs) use invariant culture.
 
 ### Separation of Concerns
 - **Never** place validation or business logic in the WPF project.

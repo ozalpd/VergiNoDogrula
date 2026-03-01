@@ -9,26 +9,29 @@
         Height="600" MinHeight="400" Width="800" MinWidth="600">
     <Grid Margin="8,8,8,8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="160" />
             <ColumnDefinition Width="32" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="96" />
             <ColumnDefinition Width="32" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="8" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
             <RowDefinition Height="18" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="18" />
+            <RowDefinition Height="18" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
             <Button Style="{StaticResource IconButtonStyle-28x24}"
                 ToolTip="Yeni bir mükellef eklemek için tıklayın"
                 Command="{Binding AddTaxPayerCommand}"
@@ -60,9 +63,13 @@
             </Button>
         </StackPanel>
 
-        <TextBox x:Name="SearchTextBox" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,4,8,0" VerticalAlignment="Top"
+        <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" BorderBrush="#dbdbdb" BorderThickness="1" Margin="0,2,0,2" Padding="4">
+            <TextBlock Text="{Binding Status}" FontSize="14" FontWeight="Bold" Margin="0" />
+        </Border>
+
+        <TextBox x:Name="SearchTextBox" Grid.Column="1" Grid.Row="0" Margin="4,4,8,0" VerticalAlignment="Top"
                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBlock Text="Ara.." Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Top" Margin="8,4,8,0"
+        <TextBlock Text="Ara.." Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Margin="8,4,8,0"
                    Foreground="#989898" IsHitTestVisible="False">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
@@ -75,18 +82,27 @@
             </TextBlock.Style>
         </TextBlock>
         
-        <Label Grid.Column="0" Grid.Row="1" Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0,4,0,0" />
-        <TextBox Grid.Column="1" Grid.Row="1" Margin="4,4,8,0" VerticalAlignment="Top"
+        <Label Grid.Column="0" Grid.Row="2" Content="Vergi Numarası:" VerticalAlignment="Top" Margin="0" />
+        <TextBox Grid.Column="1" Grid.Row="2" Margin="4,4,8,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.TaxNumber, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}" />
 
-        <Label Grid.Column="0" Grid.Row="3" Content="Ünvan:" VerticalAlignment="Top" Margin="0,4,0,0" />
-        <TextBox Grid.Column="1" Grid.Row="3"  Margin="4,4,8,0" VerticalAlignment="Top"
+        <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource IconButtonStyle-28x24}"
+                ToolTip="Vergi numarasını kopyala"
+                Command="{Binding CopyTaxNumberCommand}"
+                CommandParameter="{Binding}"
+                AutomationProperties.Name="VknKopyala">
+            <Viewbox Width="14" Height="14">
+                <Path Fill="Black" Data="{StaticResource copy}"/>
+            </Viewbox>
+        </Button>
+        <Label Grid.Column="0" Grid.Row="4" Content="Ünvan:" VerticalAlignment="Top" Margin="0" />
+        <TextBox Grid.Column="1" Grid.Row="4" Margin="4,4,8,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>
 
-        <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,8,0"
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="6" Grid.RowSpan="3" Margin="0"
                   ItemsSource="{Binding CollectionFiltered}" 
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"
@@ -120,9 +136,5 @@
                 </Style>
             </DataGrid.Style>
         </DataGrid>
-        
-        <Border Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="5" BorderBrush="#dbdbdb" BorderThickness="1" Margin="4,2,0,0" Padding="4">
-            <TextBlock Text="{Binding Status}" FontSize="14" FontWeight="Bold" Margin="0" />
-        </Border>
     </Grid>
 </Window>

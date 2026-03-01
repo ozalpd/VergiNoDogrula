@@ -1,4 +1,4 @@
-using System.Windows.Input;
+using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF.Commands
 {
@@ -6,7 +6,7 @@ namespace VergiNoDogrula.WPF.Commands
     {
         public override bool CanExecute(object? parameter)
         {
-            if (parameter is not ViewModels.TaxPayerCollectionVM collectionVM)
+            if (parameter is not TaxPayerCollectionVM collectionVM)
                 return false;
 
             return collectionVM.SelectedItem != null;
@@ -14,7 +14,7 @@ namespace VergiNoDogrula.WPF.Commands
 
         public override async void Execute(object? parameter)
         {
-            if (parameter is ViewModels.TaxPayerCollectionVM collectionVM)
+            if (parameter is TaxPayerCollectionVM collectionVM)
             {
                 await collectionVM.DeleteSelectedAsync();
             }

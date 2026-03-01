@@ -66,7 +66,7 @@ namespace VergiNoDogrula.Data
             await connection.OpenAsync();
 
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT Title, TaxNumber FROM TaxPayers ORDER BY Id";
+            command.CommandText = "SELECT Title, TaxNumber FROM TaxPayers ORDER BY Title";
 
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())

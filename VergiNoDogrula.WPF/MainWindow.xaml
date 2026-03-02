@@ -39,7 +39,7 @@
                 CommandParameter="{Binding}"
                 AutomationProperties.Name="Ekle">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="Black" Data="{StaticResource plus-circle}"/>
+                    <Path Fill="#0078D7" Data="{StaticResource plus-circle}"/>
                 </Viewbox>
             </Button>
 
@@ -49,7 +49,7 @@
                 CommandParameter="{Binding}"
                 AutomationProperties.Name="Kaydet">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#1D9BF0" Data="{StaticResource floppy-fill}"/>
+                    <Path Fill="#0078D7" Data="{StaticResource floppy-fill}"/>
                 </Viewbox>
             </Button>
 
@@ -60,7 +60,20 @@
                     CommandParameter="{Binding}"
                     AutomationProperties.Name="Sil">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#F8F8F8" Data="{StaticResource trash3}"/>
+                    <Path>
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#F8F8F8"/>
+                                <Setter Property="Data" Value="{StaticResource trash3}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                                        <Setter Property="Fill" Value="#C80000"/>
+                                        <Setter Property="Data" Value="{StaticResource trash3}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
                 </Viewbox>
             </Button>
         </StackPanel>
@@ -73,7 +86,20 @@
                     CommandParameter="{Binding}"
                     AutomationProperties.Name="Yedekle">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#F8F8F8" Data="{StaticResource archive}"/>
+                    <Path>
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Data" Value="{StaticResource archive}"/>
+                                <Setter Property="Fill" Value="#F8F8F8"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                                        <Setter Property="Fill" Value="#0078D7"/>
+                                        <Setter Property="Data" Value="{StaticResource archive-fill}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
                 </Viewbox>
             </Button>
 

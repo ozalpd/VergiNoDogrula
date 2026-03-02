@@ -5,7 +5,7 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded" Unloaded="Window_Unloaded">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

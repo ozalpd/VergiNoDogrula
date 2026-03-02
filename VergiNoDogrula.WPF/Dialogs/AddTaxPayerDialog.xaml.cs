@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows;
 using VergiNoDogrula.WPF.ViewModels;
 
@@ -15,6 +16,8 @@ public partial class AddTaxPayerDialog : Window
     {
         InitializeComponent();
         _viewModel = new TaxPayerVM();
+        _viewModel.ErrorsChanged += OnViewModelErrorsChanged;
+         DataContext = _viewModel;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -27,9 +30,16 @@ public partial class AddTaxPayerDialog : Window
         TaxNumberTextBox.Focus();
     }
 
+    private void Window_Unloaded(object sender, RoutedEventArgs e)
+    {
+        _viewModel.ErrorsChanged -= OnViewModelErrorsChanged;
+    }
+
+
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
-        ValidateVM();
+        _viewModel.TaxNumber = TaxNumberTextBox.Text;
+        _viewModel.Title = TitleTextBox.Text.Trim();
 
         if (_viewModel.HasErrors)
             return;
@@ -42,28 +52,31 @@ public partial class AddTaxPayerDialog : Window
     private void TaxNumberTextBox_LostFocus(object sender, RoutedEventArgs e)
     {
         _viewModel.TaxNumber = TaxNumberTextBox.Text;
-        ValidateVM();
     }
 
     private void TitleTextBox_LostFocus(object sender, RoutedEventArgs e)
     {
         _viewModel.Title = TitleTextBox.Text.Trim();
-        ValidateVM();
     }
 
-    private void ValidateVM()
-    {
-        if (_viewModel.HasErrors)
-        {
-            ErrorMessage.Text = string.Join("\n", GetAllErrors(_viewModel));
-        }
-    }
 
     private void OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
         OkButton.IsEnabled = !string.IsNullOrWhiteSpace(TaxNumberTextBox.Text) &&
                              IsTaxNumberOK() &&
                              !string.IsNullOrWhiteSpace(TitleTextBox.Text);
+    }
+
+    private void OnViewModelErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
+    {
+        if (_viewModel.HasErrors)
+        {
+            ErrorMessage.Text = string.Join("\n", GetAllErrors(_viewModel));
+        }
+        else
+        {
+            IsTaxNumberOK();
+        }
     }
 
     private void TaxNumberTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)

@@ -15,9 +15,8 @@ internal interface IBackupService
     /// <summary>
     /// Deletes old backup files based on retention policy.
     /// </summary>
-    /// <param name="keepCount">Number of most recent backups to keep.</param>
     /// <returns>Number of files deleted.</returns>
-    Task<int> CleanupOldBackupsAsync(int keepCount = 10);
+    Task<int> CleanupOldBackupsAsync();
 
     /// <summary>
     /// Checks if auto-backup is due based on settings.

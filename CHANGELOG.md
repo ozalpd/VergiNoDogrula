@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.4] - 2025-01-16
+
+### Added
+- **Configurable Backup Retention** - `MaxBackupFiles` setting in `AppSettings`
+  - Allows users to configure the number of recent backups to keep (default: 10, minimum: 10)
+  - Exposed in `appsettings.json` for end-user customization
+  - Replaces hardcoded `keepCount` parameter in `CleanupOldBackupsAsync`
+
+### Changed
+- **Auto-Backup Cleanup** - `AutoBackupHelper.RunAsync()` now calls `CleanupOldBackupsAsync()`
+  - Old backup files are automatically cleaned up when auto-backup runs
+  - Uses `MaxBackupFiles` setting from `AppSettings` to determine retention count
+- **IBackupService Interface** - `CleanupOldBackupsAsync()` parameter changed from `keepCount` to use settings
+  - Parameter removed; method now reads retention count from `AppSettings.MaxBackupFiles`
+  - Simplifies API and ensures consistent retention policy across manual and auto backups
+
+### Technical Details
+- Updated `DatabaseBackupService.CleanupOldBackupsAsync()` to read `_settings.MaxBackupFiles`
+- `AutoBackupHelper.RunAsync()` now performs cleanup after successful backup creation
+
 ## [1.1.3] - 2025-01-16
 
 ### Fixed

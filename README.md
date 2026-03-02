@@ -19,7 +19,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
 - **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.
 - **Manual Backup** — One-click backup via toolbar button; creates compressed ZIP files.
-- **Backup Retention** — Auto-cleanup keeps last 10 backups, preventing disk space bloat.
+- **Backup Retention** — Auto-cleanup keeps last N backups (configurable via `MaxBackupFiles` in settings, default: 10), preventing disk space bloat.
 - **Clipboard Integration** — Copy taxpayer tax numbers to clipboard with a single click.
 - **SQLite Persistence** — Taxpayer records are stored locally in a SQLite database at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
 - **Metadata Tracking** — CUD operations update `DatabaseMetadata.LastUpdateUtc`; repository exposes `LastUpdateTime` in local time.
@@ -93,8 +93,8 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
   - Backup interval has passed (default: 10 minutes)
   - Database was modified since last backup
 - **Backup location**: `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\` (default)
-- **Format**: Timestamped ZIP files (`taxpayers_backup_yyyyMMdd_HHmmss.zip`)
-- **Retention**: Last 10 backups are kept; older backups are auto-deleted
+- **Format**: Timestamped ZIP files (`dbbackup-yyyy-MM-dd-HHmm.zip`)
+- **Retention**: Configurable via `MaxBackupFiles` setting (default: 10, minimum: 10); older backups are auto-deleted
 
 ### Configure Backup Settings
 Edit `%APPDATA%\VergiNoDogrula\appsettings.json`:
@@ -103,6 +103,7 @@ Edit `%APPDATA%\VergiNoDogrula\appsettings.json`:
   "AutoBackupEnabled": true,
   "AutoBackupIntervalMinutes": 60,
   "BackupFolder": "C:\\path\\to\\custom\\backup\\folder",
+  "MaxBackupFiles": 10,
   "LastBackupTimeUtc": "2024-01-15T10:30:00.000Z"
 }
 ```

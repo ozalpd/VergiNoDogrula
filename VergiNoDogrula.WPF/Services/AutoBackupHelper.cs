@@ -25,6 +25,7 @@ namespace VergiNoDogrula.WPF.Services
                 {
                     var connectionString = $"Data Source={settings.DatabasePath}";
                     await backupService.CreateBackupAsync(connectionString);
+                    await backupService.CleanupOldBackupsAsync();
                 }
             }
         }

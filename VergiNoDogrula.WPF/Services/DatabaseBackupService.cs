@@ -117,9 +117,8 @@ internal class DatabaseBackupService : IBackupService
     /// <summary>
     /// Deletes old backup files, keeping only the most recent ones.
     /// </summary>
-    /// <param name="keepCount">Number of most recent backups to keep.</param>
     /// <returns>Number of files deleted.</returns>
-    public async Task<int> CleanupOldBackupsAsync(int keepCount = 10)
+    public async Task<int> CleanupOldBackupsAsync()
     {
         try
         {
@@ -134,12 +133,12 @@ internal class DatabaseBackupService : IBackupService
                 .OrderByDescending(f => f.CreationTime)
                 .ToList();
 
-            if (backupFiles.Count <= keepCount)
+            if (backupFiles.Count <= _settings.MaxBackupFiles)
             {
                 return 0;
             }
 
-            var filesToDelete = backupFiles.Skip(keepCount).ToList();
+            var filesToDelete = backupFiles.Skip((int)_settings.MaxBackupFiles).ToList();
             var deletedCount = 0;
 
             await Task.Run(() =>

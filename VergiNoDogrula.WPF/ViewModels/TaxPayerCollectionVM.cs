@@ -244,7 +244,7 @@ namespace VergiNoDogrula.WPF.ViewModels
                     Status = $"Yedek başarıyla oluşturuldu: {Path.GetFileName(backupPath)}";
                     PlaySuccessSound();
                     
-                    await _backupService.CleanupOldBackupsAsync(keepCount: 10);
+                    await _backupService.CleanupOldBackupsAsync();
                 }
                 else
                 {

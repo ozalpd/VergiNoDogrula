@@ -106,9 +106,10 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
 | `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/archive-blue), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
-| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`). |
+| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). |
 | `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |
-| `Services/DatabaseBackupService.cs` | SQLite backup implementation using `SqliteConnection.BackupDatabase()` API. Creates timestamped ZIP files. Checks if backup is due based on interval. Auto-cleanup keeps last 10 backups. |
+| `Services/DatabaseBackupService.cs` | SQLite backup implementation using `SqliteConnection.BackupDatabase()` API. Creates timestamped ZIP files. Checks if backup is due based on interval. Auto-cleanup uses `MaxBackupFiles` from settings. |
+| `Services/AutoBackupHelper.cs` | Static helper for auto-backup workflow. Checks if backup is due, compares database modification time with last backup time, creates backup if needed, and performs cleanup of old backups. |
 
 ## Developer Workflow
 
@@ -146,10 +147,11 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 - **Smart deduplication** - Compares `LastUpdateUtc` from database vs `LastBackupTimeUtc` to avoid redundant backups.
 - **SQLite BACKUP API** - Uses `SqliteConnection.BackupDatabase()` for consistent snapshots while database is in use.
 - **ZIP compression** - Backups compressed with `CompressionLevel.Optimal`.
-- **Retention policy** - Keeps last 10 backups, auto-deletes older ones.
+- **Retention policy** - Keeps last N backups (configurable via `MaxBackupFiles`, default: 10, minimum: 10), auto-deletes older ones.
+- **Auto-cleanup** - `AutoBackupHelper.RunAsync()` calls `CleanupOldBackupsAsync()` after successful backup creation.
 - **UTC timestamps** - All backup/update times stored in UTC (`LastBackupTimeUtc`, `LastUpdateUtc`) to avoid timezone/DST issues.
 - **Default location** - `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\`
-- **Naming convention** - `taxpayers_backup_yyyyMMdd_HHmmss.zip`
+- **Naming convention** - `dbbackup-yyyy-MM-dd-HHmm.zip`
 
 ### Services Pattern
 - Services live in `VergiNoDogrula.WPF/Services/` and encapsulate application-level operations (not business logic).

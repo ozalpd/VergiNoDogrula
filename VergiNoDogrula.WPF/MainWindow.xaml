@@ -49,19 +49,34 @@
                 CommandParameter="{Binding}"
                 AutomationProperties.Name="Kaydet">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#00008F" Data="{StaticResource floppy}"/>
+                    <Path Fill="#0000d0" Data="{StaticResource floppy}"/>
                 </Viewbox>
             </Button>
 
             <Button Style="{StaticResource IconButtonStyle-28x24}"
-                ToolTip="Seçili mükellefi silmek için tıklayın"
-                Command="{Binding DeleteTaxPayerCommand}"
-                CommandParameter="{Binding}"
-                AutomationProperties.Name="Sil">
+                    ToolTip="Seçili mükellefi silmek için tıklayın"
+                    Background="#C80000"
+                    Command="{Binding DeleteTaxPayerCommand}"
+                    CommandParameter="{Binding}"
+                    AutomationProperties.Name="Sil">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="Black" Data="{StaticResource trash3}"/>
+                    <Path Fill="#F8F8F8" Data="{StaticResource trash3}"/>
                 </Viewbox>
             </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="0" Grid.Column="7" Orientation="Horizontal">
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
+                    ToolTip="Veritabanını yedeklemek için tıklayın"
+                    Background="#4488FF"
+                    Command="{Binding BackupDatabaseCommand}"
+                    CommandParameter="{Binding}"
+                    AutomationProperties.Name="Yedekle">
+                <Viewbox Width="14" Height="14">
+                    <Path Fill="#F8F8F8" Data="{StaticResource archive}"/>
+                </Viewbox>
+            </Button>
+            
         </StackPanel>
 
         <Border Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="1" BorderBrush="#dbdbdb" BorderThickness="1" Margin="0,2,0,2" Padding="4">

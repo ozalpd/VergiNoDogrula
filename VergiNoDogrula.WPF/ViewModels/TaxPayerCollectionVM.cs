@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Media;
 using System.Windows;
 using System.Windows.Input;
@@ -8,22 +9,26 @@ using VergiNoDogrula.Models;
 using VergiNoDogrula.WPF.Commands;
 using VergiNoDogrula.WPF.Helpers;
 using VergiNoDogrula.WPF.Models;
+using VergiNoDogrula.WPF.Services;
 
 namespace VergiNoDogrula.WPF.ViewModels
 {
     internal class TaxPayerCollectionVM : AbstractCollectionVM<TaxPayerVM>
     {
         private readonly ITaxPayerRepository _repository;
+        private readonly IBackupService _backupService;
 
         public TaxPayerCollectionVM(ITaxPayerRepository repository)
         {
             _repository = repository;
+            _backupService = new DatabaseBackupService(AppSettings.GetAppSettings());
 
             AddTaxPayerCommand = new AddTaxPayerCommand();
             CopyTaxNumberCommand = new CopyTaxNumberCommand();
             EmptySearchStringCommand = new EmptySearchStringCommand();
             DeleteTaxPayerCommand = new DeleteTaxPayerCommand();
             SaveTaxPayerCommand = new SaveTaxPayerCommand();
+            BackupDatabaseCommand = new BackupDatabaseCommand();
         }
 
 
@@ -43,6 +48,7 @@ namespace VergiNoDogrula.WPF.ViewModels
         public ICommand DeleteTaxPayerCommand { get; }
         public ICommand EmptySearchStringCommand { get; }
         public ICommand SaveTaxPayerCommand { get; }
+        public ICommand BackupDatabaseCommand { get; }
 
         public bool IsSearching { get; private set; }
         public bool IsSearchNumeric { get; private set; }
@@ -220,6 +226,33 @@ namespace VergiNoDogrula.WPF.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"Silme işlemi sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public async Task CreateBackupAsync()
+        {
+            try
+            {
+                var settings = AppSettings.GetAppSettings();
+                var connectionString = $"Data Source={settings.DatabasePath}";
+                var backupPath = await _backupService.CreateBackupAsync(connectionString);
+                
+                if (backupPath != null)
+                {
+                    Status = $"Yedek başarıyla oluşturuldu: {Path.GetFileName(backupPath)}";
+                    PlaySuccessSound();
+                    
+                    await _backupService.CleanupOldBackupsAsync(keepCount: 10);
+                }
+                else
+                {
+                    Status = "Yedekleme başarısız oldu.";
+                    MessageBox.Show("Veritabanı yedeği oluşturulamadı.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Yedekleme sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -45,7 +45,7 @@ namespace VergiNoDogrula.WPF.Models
         }
         string _backupDir = string.Empty;
 
-        public DateTime? LastBackupTime { get; set; }
+        public DateTime? LastBackupTimeUtc { get; set; }
         public bool MuteAudio { get; set; } = false;
 
         public string DatabasePath

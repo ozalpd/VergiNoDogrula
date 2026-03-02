@@ -27,30 +27,36 @@ VergiNoDogrula/                       # Root / solution directory
 │   └── ValidateExtensions.cs        # Extension methods: IsValidVKN, IsValidTCKN, IsValidTaxNumber, IsSameTaxNumbers
 ├── VergiNoDogrula.Data/              # Data-access class library (net10.0)
 │   ├── ITaxPayerRepository.cs        # Repository interface: GetAll, Save, Delete, GetByTaxNumber
-│   └── SqliteTaxPayerRepository.cs   # SQLite implementation of ITaxPayerRepository + DatabaseMetadata tracking
+│   ├── SqliteTaxPayerRepository.cs   # SQLite implementation of ITaxPayerRepository + DatabaseMetadata tracking
+│   ├── IDatabaseMetadataRepository.cs # Repository interface for accessing `DatabaseMetadata` table (last update timestamp).
+│   └── SqliteDatabaseMetadataRepository.cs # UTC-aware metadata reader; reads `LastUpdateUtc` from database; provides `GetLastUpdateTimeUtcAsync()` and `GetLastUpdateTimeAsync()` (local time conversion).
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation with public RaiseCanExecuteChanged
 │   │   ├── AddTaxPayerCommand.cs    # Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it.
 │   │   ├── CopyTaxNumberCommand.cs  # Copies the selected taxpayer's tax number to clipboard. Enabled only when `SelectedItem` is non-null.
 │   │   ├── SaveTaxPayerCommand.cs   # Validates then persists the selected TaxPayerVM to SQLite
-│   │   └── DeleteTaxPayerCommand.cs # Deletes the selected TaxPayerVM from SQLite with confirmation
+│   │   ├── DeleteTaxPayerCommand.cs # Deletes the selected TaxPayerVM from SQLite with confirmation
+│   │   └── BackupDatabaseCommand.cs # Manual backup command; creates timestamped ZIP backup
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and OK button state management
 │   ├── Models/
-│   │   └── AppSettings.cs           # App-level settings (db path, backup folder/interval, singleton load/save)
+│   │   └── AppSettings.cs           # App-level settings (db path, backup folder/interval, LastBackupTimeUtc [UTC], singleton load/save)
+│   ├── Services/
+│   │   ├── IBackupService.cs         # Backup service interface: CreateBackupAsync, CleanupOldBackupsAsync, IsBackupDue
+│   │   └── DatabaseBackupService.cs  # SQLite backup implementation using BackupDatabase() API + ZIP compression
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractCollectionVM.cs  # Generic base for collection ViewModels; provides `Collection`, `CollectionFiltered`, `SelectedItem`, `SearchString` properties and abstract hooks for search/selection lifecycle.
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base (error dictionary)
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer; validates via exception catching
-│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection<TaxPayerVM> + commands + repository integration + search logic
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection<TaxPayerVM> + commands + repository integration + search logic + backup service
 │   ├── Resources/
 │   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared styles (DisabledWhenNullTextBoxStyle)
-│   ├── MainWindow.xaml / .xaml.cs   # Main UI; search box with focus-hiding placeholder, TextBoxes for selected item, icon buttons (Ekle/Save/Delete/Copy), DataGrid with empty-state template, status bar
-│   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml and persists app settings on exit
+│   ├── MainWindow.xaml / .xaml.cs   # Main UI; search box with focus-hiding placeholder, TextBoxes for selected item, icon buttons (Ekle/Save/Delete/Copy/Backup), DataGrid with empty-state template, status bar
+│   └── App.xaml / .xaml.cs          # Application entry; merges Styles.xaml, auto-backup check on startup, persists app settings on exit
 └── VergiNoDogrula.sln
 ```
 
@@ -77,6 +83,8 @@ A .NET class library dedicated to persistence. Depends on `Microsoft.Data.Sqlite
 |---|---|
 | `ITaxPayerRepository.cs` | Repository interface defining async CRUD operations: `GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`. |
 | `SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. Tracks CUD metadata in `DatabaseMetadata` and exposes `LastUpdateTime` (local time). |
+| `IDatabaseMetadataRepository.cs` | Repository interface for accessing `DatabaseMetadata` table (last update timestamp). |
+| `SqliteDatabaseMetadataRepository.cs` | UTC-aware metadata reader; reads `LastUpdateUtc` from database; provides `GetLastUpdateTimeUtcAsync()` and `GetLastUpdateTimeAsync()` (local time conversion). |
 
 ### Presentation Layer — `VergiNoDogrula.WPF`
 
@@ -94,10 +102,13 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 | `Commands/CopyTaxNumberCommand.cs` | Copies the selected taxpayer's tax number to the system clipboard. Enabled only when `SelectedItem` is non-null. |
 | `Commands/SaveTaxPayerCommand.cs` | Persists the selected `TaxPayerVM` to SQLite via the repository. Enabled only when `SelectedItem` is non-null and has no validation errors. |
 | `Commands/DeleteTaxPayerCommand.cs` | Deletes the selected `TaxPayerVM` from SQLite with a confirmation dialog. Enabled only when `SelectedItem` is non-null. |
+| `Commands/BackupDatabaseCommand.cs` | Manual backup command; creates timestamped ZIP backup. |
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
-| `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons for Ekle (Add/plus-circle), Kaydet (Save/floppy), Sil (Delete/trash3), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
-| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings, `LastBackupTime`). |
+| `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/archive-blue), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
+| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`). |
+| `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |
+| `Services/DatabaseBackupService.cs` | SQLite backup implementation using `SqliteConnection.BackupDatabase()` API. Creates timestamped ZIP files. Checks if backup is due based on interval. Auto-cleanup keeps last 10 backups. |
 
 ## Developer Workflow
 
@@ -110,6 +121,7 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 | UI changes | Edit files inside `VergiNoDogrula.WPF/` |
 | Database location | `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db` (auto-created on first run) |
 | App settings location | `%APPDATA%\VergiNoDogrula\appsettings.json` |
+| Backup location | `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\` (default) |
 
 ## Key Conventions
 
@@ -127,6 +139,22 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 - When implementing new sorting or string comparison features for user-facing text, always use `StringComparer.Create(CultureInfo.GetCultureInfo("tr-TR"), ignoreCase: true)`.
 - **SQLite queries should NOT use `COLLATE` for Turkish text**; sort in C# instead using Turkish culture to avoid incorrect ordering.
 - Numeric comparisons and non-user-facing data (e.g., tax numbers, IDs) use invariant culture.
+
+### Backup Strategy
+- **Auto-backup on startup** - `App.OnStartup()` checks if backup is due and database was modified since last backup.
+- **Manual backup** - Blue archive button in toolbar triggers on-demand backup.
+- **Smart deduplication** - Compares `LastUpdateUtc` from database vs `LastBackupTimeUtc` to avoid redundant backups.
+- **SQLite BACKUP API** - Uses `SqliteConnection.BackupDatabase()` for consistent snapshots while database is in use.
+- **ZIP compression** - Backups compressed with `CompressionLevel.Optimal`.
+- **Retention policy** - Keeps last 10 backups, auto-deletes older ones.
+- **UTC timestamps** - All backup/update times stored in UTC (`LastBackupTimeUtc`, `LastUpdateUtc`) to avoid timezone/DST issues.
+- **Default location** - `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\`
+- **Naming convention** - `taxpayers_backup_yyyyMMdd_HHmmss.zip`
+
+### Services Pattern
+- Services live in `VergiNoDogrula.WPF/Services/` and encapsulate application-level operations (not business logic).
+- Define an interface (`IBackupService`) for testability.
+- Services are instantiated in ViewModels or `App.xaml.cs` (no DI container currently).
 
 ### Separation of Concerns
 - **Never** place validation or business logic in the WPF project.

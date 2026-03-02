@@ -17,6 +17,9 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
 - **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
+- **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.
+- **Manual Backup** — One-click backup via toolbar button; creates compressed ZIP files.
+- **Backup Retention** — Auto-cleanup keeps last 10 backups, preventing disk space bloat.
 - **Clipboard Integration** — Copy taxpayer tax numbers to clipboard with a single click.
 - **SQLite Persistence** — Taxpayer records are stored locally in a SQLite database at `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`.
 - **Metadata Tracking** — CUD operations update `DatabaseMetadata.LastUpdateUtc`; repository exposes `LastUpdateTime` in local time.
@@ -83,6 +86,33 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
 1. Select a taxpayer from the DataGrid
 2. The tax number is now available via the copy button or can be copied from the text field
 
+### Backup Database
+- **Manual backup**: Click the blue archive icon (Yedekle) in the toolbar
+- **Auto-backup**: Runs on application startup if:
+  - Auto-backup is enabled (`AutoBackupEnabled = true`)
+  - Backup interval has passed (default: 60 minutes)
+  - Database was modified since last backup
+- **Backup location**: `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\` (default)
+- **Format**: Timestamped ZIP files (`taxpayers_backup_yyyyMMdd_HHmmss.zip`)
+- **Retention**: Last 10 backups are kept; older backups are auto-deleted
+
+### Configure Backup Settings
+Edit `%APPDATA%\VergiNoDogrula\appsettings.json`:
+```json
+{
+  "AutoBackupEnabled": true,
+  "AutoBackupIntervalMinutes": 60,
+  "BackupFolder": "C:\\path\\to\\custom\\backup\\folder",
+  "LastBackupTimeUtc": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### Restore from Backup
+1. Close the application
+2. Extract the `.db` file from a backup ZIP
+3. Replace `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db` with the extracted file
+4. Restart the application
+
 ## Solution Structure
 
 ```
@@ -94,30 +124,36 @@ VergiNoDogrula/
 │   └── ValidateExtensions.cs        # Extension methods for VKN / TCKN validation
 ├── VergiNoDogrula.Data/              # Data-access class library (net10.0)
 │   ├── ITaxPayerRepository.cs        # Repository interface for CRUD operations
-│   └── SqliteTaxPayerRepository.cs   # SQLite-backed implementation + DatabaseMetadata tracking
+│   ├── SqliteTaxPayerRepository.cs   # SQLite-backed implementation + DatabaseMetadata tracking
+│   ├── IDatabaseMetadataRepository.cs # Repository interface for database metadata access
+│   └── SqliteDatabaseMetadataRepository.cs # UTC-aware metadata reader
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
 │   │   ├── AddTaxPayerCommand.cs    # Opens AddTaxPayerDialog to create a new taxpayer
 │   │   ├── CopyTaxNumberCommand.cs  # Copies selected taxpayer's tax number to clipboard
 │   │   ├── SaveTaxPayerCommand.cs   # Persists the selected taxpayer to SQLite
-│   │   └── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
+│   │   ├── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
+│   │   └── BackupDatabaseCommand.cs # Manual backup command
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
 │   ├── Models/
 │   │   └── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
+│   ├── Services/
+│   │   ├── IBackupService.cs         # Backup service interface
+│   │   └── DatabaseBackupService.cs  # SQLite backup using BackupDatabase() API + ZIP compression
 │   ├── ViewModels/
 │   │   ├── AbstractViewModel.cs     # INotifyPropertyChanged base
 │   │   ├── AbstractCollectionVM.cs  # Generic collection ViewModel base with search support
 │   │   ├── AbstractDataErrorInfoVM.cs # INotifyDataErrorInfo base
 │   │   ├── TaxPayerVM.cs            # ViewModel wrapping TaxPayer model
-│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository + search logic
+│   │   └── TaxPayerCollectionVM.cs  # ObservableCollection + commands + repository + search logic + backup service
 │   ├── Resources/
 │   │   ├── BootstrapIcons.xaml      # Bootstrap Icons geometry resources
 │   │   └── Styles.xaml              # Shared WPF styles
 │   ├── MainWindow.xaml / .xaml.cs   # Main application window
-│   └── App.xaml / .xaml.cs          # Application entry point, resource merge, settings save on exit
+│   └── App.xaml / .xaml.cs          # Application entry point, resource merge, auto-backup check, settings save on exit
 └── VergiNoDogrula.sln
 ```
 
@@ -139,6 +175,8 @@ A dedicated .NET class library for persistence. Contains:
 
 - **`ITaxPayerRepository`** — Repository interface defining async CRUD operations (`GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`).
 - **`SqliteTaxPayerRepository`** — SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses UPSERT semantics for save operations and tracks CUD timestamps in `DatabaseMetadata`.
+- **`IDatabaseMetadataRepository`** — Repository interface for accessing database metadata (last update timestamp).
+- **`SqliteDatabaseMetadataRepository`** — UTC-aware metadata reader; provides `GetLastUpdateTimeUtcAsync()` and `GetLastUpdateTimeAsync()` (local time conversion).
 - **`Microsoft.Data.Sqlite`** package reference — Kept in this project so the core library stays lean and persistence-agnostic.
 
 ### Presentation Layer (`VergiNoDogrula.WPF`)
@@ -146,10 +184,12 @@ A dedicated .NET class library for persistence. Contains:
 A WPF application following the **MVVM** pattern:
 
 - **ViewModels** delegate validation to the model layer, translating exceptions into `INotifyDataErrorInfo` entries for UI binding.
-- **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`.
-- **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
+- **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`. `BackupDatabaseCommand` triggers manual backup.
+- **Services** encapsulate application-level operations. `DatabaseBackupService` uses SQLite's `BackupDatabase()` API for consistent snapshots while the database is in use, then compresses to ZIP.
+- **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion, and the backup service for database backups. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
-- **`AppSettings`** is loaded as a singleton and persisted at application shutdown.
+- **`AppSettings`** is loaded as a singleton and persisted at application shutdown. Contains backup configuration (`AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`).
+- **Auto-backup** runs on application startup if enabled, interval has passed, and database was modified since last backup.
 - **Data** is loaded asynchronously on startup via `MainWindow` initialization.
 
 #### UI Features
@@ -158,9 +198,10 @@ A WPF application following the **MVVM** pattern:
 - **Placeholder Text** — Search box shows "Ara.." hint text that disappears on focus.
 - **Empty State** — DataGrid shows "Henüz kayıt yok" (No records yet) when the collection is empty.
 - **Status Bar** — Displays operation feedback (success/error messages, record counts).
-- **Icon Buttons** — Uses Bootstrap Icons for Add (plus-circle), Save (floppy), Delete (trash3) operations.
+- **Icon Buttons** — Uses Bootstrap Icons for Add (plus-circle), Save (floppy), Delete (trash3), Backup (archive-blue) operations.
 - **Real-time Validation** — Input fields show validation errors with red borders and descriptive messages.
 - **Clipboard Support** — Copy taxpayer tax numbers to clipboard with a dedicated copy command.
+- **Backup Integration** — Manual backup button and auto-backup on startup with smart deduplication.
 
 ## Validation Rules
 
@@ -173,8 +214,11 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 
 ## Data Locations
 
-- **SQLite database**: `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db`
-- **App settings**: `%APPDATA%\VergiNoDogrula\appsettings.json`
+| Item | Path |
+|------|------|
+| SQLite database | `%LOCALAPPDATA%\VergiNoDogrula\taxpayers.db` |
+| App settings | `%APPDATA%\VergiNoDogrula\appsettings.json` |
+| Backups | `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\` (default) |
 
 > **Note:** The application uses Turkish culture (`tr-TR`) for sorting taxpayer titles to ensure correct alphabetical ordering of Turkish characters (ç, ğ, ı, ö, ş, ü).
 

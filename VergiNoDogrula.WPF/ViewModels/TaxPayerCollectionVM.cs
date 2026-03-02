@@ -29,6 +29,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             DeleteTaxPayerCommand = new DeleteTaxPayerCommand();
             SaveTaxPayerCommand = new SaveTaxPayerCommand();
             BackupDatabaseCommand = new BackupDatabaseCommand();
+            ShowAboutCommand = new ShowAboutCommand();
         }
 
 
@@ -49,6 +50,7 @@ namespace VergiNoDogrula.WPF.ViewModels
         public ICommand EmptySearchStringCommand { get; }
         public ICommand SaveTaxPayerCommand { get; }
         public ICommand BackupDatabaseCommand { get; }
+        public ICommand ShowAboutCommand { get; }
 
         public bool IsSearching { get; private set; }
         public bool IsSearchNumeric { get; private set; }

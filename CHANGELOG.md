@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2025-01-16
 
 ### Added
 - **Database Backup Service** - Automated and manual database backup functionality
@@ -20,9 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Checks if backup is due based on `AutoBackupIntervalMinutes` (default: 60 minutes)
   - Only creates backup if database was modified since last backup
   - Configurable via `appsettings.json`
-- **Manual Backup Command** - Green floppy disk button in toolbar
+- **Manual Backup Command** - Blue archive button in toolbar
   - `BackupDatabaseCommand` for on-demand backups
-  - Bound to UI button with Bootstrap Icons `floppy2` icon
+  - Bound to UI button with Bootstrap Icons `archive` icon
 - **Backup Retention Policy** - Auto-cleanup of old backups
   - Keeps last 10 backups by default
   - `CleanupOldBackupsAsync` deletes older files automatically
@@ -34,6 +34,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All timestamps stored in UTC (`LastBackupTimeUtc`, `LastUpdateUtc`)
   - Prevents timezone/DST issues
   - Proper parsing with `DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal`
+- **About Dialog** - Application information dialog
+  - Displays version, copyright, description
+  - GitHub repository link
+  - `ShowAboutCommand` and info-circle button in toolbar
+- **Version Information** - Assembly versioning
+  - Version 1.1.0 in all project files
+  - `AppVersion` helper class for runtime access
+  - Company, product, and copyright metadata
 
 ### Changed
 - **AppSettings** - Added backup-related properties
@@ -47,10 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **TaxPayerCollectionVM** - Integrated backup service
   - Added `IBackupService` dependency
   - `BackupDatabaseCommand` property
+  - `ShowAboutCommand` property
   - `CreateBackupAsync()` method with success/failure handling
-- **MainWindow.xaml** - Added backup button to toolbar
-  - Green floppy disk icon (`floppy2`) for visual distinction
-  - Tooltip: "Veritabanını yedeklemek için tıklayın"
+- **MainWindow.xaml** - Added buttons to toolbar
+  - Blue archive icon (`archive`) for backup
+  - Blue info-circle icon for About dialog
+  - Tooltips: "Veritabanını yedeklemek için tıklayın" and "Hakkında"
 - **Documentation** - Updated README.md and copilot-instructions.md
   - Added backup usage instructions
   - Added backup configuration examples
@@ -77,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings: `%APPDATA%\VergiNoDogrula\appsettings.json`
 - Backups: `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\`
 
-## [1.0.0] - Initial Release
+## [1.0.0] - 2025-01-15
 
 ### Added
 - Turkish tax number validation (VKN and TCKN)

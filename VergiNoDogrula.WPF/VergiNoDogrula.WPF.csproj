@@ -7,10 +7,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\tax-icon-01.ico</ApplicationIcon>
+    
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <InformationalVersion>1.1.0</InformationalVersion>
+    <Company>VergiNoDogrula</Company>
+    <Product>VergiNo ve TCKN Doğrula</Product>
+    <Copyright>Copyright © 2025</Copyright>
+    <Description>Turkish Tax Number (VKN/TCKN) Validation Application</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Assets\tax-icon-01.ico" />
+    <Resource Include="Assets\tax-icon-01.ico" />
   </ItemGroup>
 
   <ItemGroup>

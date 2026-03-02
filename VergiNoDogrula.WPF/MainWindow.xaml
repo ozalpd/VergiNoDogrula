@@ -65,7 +65,7 @@
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="0" Grid.Column="7" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource IconButtonStyle-28x24}"
                     ToolTip="Veritabanını yedeklemek için tıklayın"
                     Background="#4488FF"
@@ -76,7 +76,15 @@
                     <Path Fill="#F8F8F8" Data="{StaticResource archive}"/>
                 </Viewbox>
             </Button>
-            
+
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
+                    ToolTip="Hakkında"
+                    Command="{Binding ShowAboutCommand}"
+                    AutomationProperties.Name="Hakkında">
+                <Viewbox Width="14" Height="14">
+                    <Path Fill="#4488FF" Data="{StaticResource info-circle-fill}"/>
+                </Viewbox>
+            </Button>
         </StackPanel>
 
         <Border Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="1" BorderBrush="#dbdbdb" BorderThickness="1" Margin="0,2,0,2" Padding="4">

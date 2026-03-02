@@ -90,7 +90,7 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
 - **Manual backup**: Click the blue archive icon (Yedekle) in the toolbar
 - **Auto-backup**: Runs on application startup if:
   - Auto-backup is enabled (`AutoBackupEnabled = true`)
-  - Backup interval has passed (default: 60 minutes)
+  - Backup interval has passed (default: 10 minutes)
   - Database was modified since last backup
 - **Backup location**: `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\` (default)
 - **Format**: Timestamped ZIP files (`taxpayers_backup_yyyyMMdd_HHmmss.zip`)

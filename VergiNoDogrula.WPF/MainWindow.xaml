@@ -49,7 +49,7 @@
                 CommandParameter="{Binding}"
                 AutomationProperties.Name="Kaydet">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#0000d0" Data="{StaticResource floppy}"/>
+                    <Path Fill="#1D9BF0" Data="{StaticResource floppy-fill}"/>
                 </Viewbox>
             </Button>
 
@@ -68,7 +68,7 @@
         <StackPanel Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource IconButtonStyle-28x24}"
                     ToolTip="Veritabanını yedeklemek için tıklayın"
-                    Background="#4488FF"
+                    Background="#1D9BF0"
                     Command="{Binding BackupDatabaseCommand}"
                     CommandParameter="{Binding}"
                     AutomationProperties.Name="Yedekle">
@@ -82,7 +82,7 @@
                     Command="{Binding ShowAboutCommand}"
                     AutomationProperties.Name="Hakkında">
                 <Viewbox Width="14" Height="14">
-                    <Path Fill="#4488FF" Data="{StaticResource info-circle-fill}"/>
+                    <Path Fill="#1D9BF0" Data="{StaticResource info-circle-fill}"/>
                 </Viewbox>
             </Button>
         </StackPanel>

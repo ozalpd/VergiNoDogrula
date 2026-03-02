@@ -11,7 +11,7 @@ namespace VergiNoDogrula.WPF.Services;
 internal class DatabaseBackupService : IBackupService
 {
     private readonly AppSettings _settings;
-
+    private string _backupFilePrefix = "dbbackup-";
     public DatabaseBackupService(AppSettings settings)
     {
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -24,7 +24,25 @@ internal class DatabaseBackupService : IBackupService
     /// <returns>The full path to the created backup file, or null if backup failed.</returns>
     public async Task<string?> CreateBackupAsync(string connectionString)
     {
+        var backupFolder = _settings.BackupFolder;
+        if (!Directory.Exists(backupFolder))
+        {
+            Directory.CreateDirectory(backupFolder);
+        }
+
+        //Since this is a desktop application users don't need more than one backup in a minute,
+        //so we can use minute-level timestamps to avoid creating multiple backups in a short time frame.
+        var timestamp = DateTime.Now.ToString("yyyy-MM-dd-HHmm");
+        var backupFileName = $"{_backupFilePrefix}{timestamp}.zip";
+        var backupPath = Path.Combine(backupFolder, backupFileName);
+
+        //Also users can easily click to the manual backup button multiple times,
+        //so we should prevent creating multiple backups in the same minute.
+        if (File.Exists(backupPath))
+            return null;
+
         string? tempDbPath = null;
+
         try
         {
             var sourcePath = _settings.DatabasePath;
@@ -32,16 +50,6 @@ internal class DatabaseBackupService : IBackupService
             {
                 return null;
             }
-
-            var backupFolder = _settings.BackupFolder;
-            if (!Directory.Exists(backupFolder))
-            {
-                Directory.CreateDirectory(backupFolder);
-            }
-
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var backupFileName = $"taxpayers_backup_{timestamp}.zip";
-            var backupPath = Path.Combine(backupFolder, backupFileName);
 
             tempDbPath = Path.Combine(Path.GetTempPath(), $"taxpayers_temp_{timestamp}.db");
 
@@ -121,7 +129,7 @@ internal class DatabaseBackupService : IBackupService
                 return 0;
             }
 
-            var backupFiles = Directory.GetFiles(backupFolder, "taxpayers_backup_*.zip")
+            var backupFiles = Directory.GetFiles(backupFolder, $"{_backupFilePrefix}*.zip")
                 .Select(f => new FileInfo(f))
                 .OrderByDescending(f => f.CreationTime)
                 .ToList();

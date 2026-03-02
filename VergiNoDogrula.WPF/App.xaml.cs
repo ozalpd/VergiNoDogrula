@@ -13,7 +13,15 @@ namespace VergiNoDogrula.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            await AutoBackup();
+            var settings = AppSettings.GetAppSettings();
+            if (settings.AutoBackupEnabled)
+            {
+                await AutoBackup();
+                int backupInterval = (int)settings.AutoBackupIntervalMinutes;
+                var backupTimer = new System.Timers.Timer(backupInterval * 60 * 1000);
+                backupTimer.Elapsed += async (sender, args) => await AutoBackup();
+                backupTimer.Start();
+            }
         }
 
         private static async Task AutoBackup()

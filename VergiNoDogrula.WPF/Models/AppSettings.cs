@@ -15,16 +15,16 @@ namespace VergiNoDogrula.WPF.Models
         {
             get
             {
-                if (backupInterval == null || backupInterval == 0)
+                if (backupInterval < 10)
                 {
-                    backupInterval = 60;
+                    backupInterval = 10;
                 }
-                return backupInterval.Value;
+                return backupInterval;
             }
 
             set => backupInterval = value;
         }
-        uint? backupInterval = null;
+        uint backupInterval = 10;
 
         public string BackupFolder
         {

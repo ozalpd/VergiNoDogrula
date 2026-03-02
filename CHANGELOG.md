@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-01-16
+
+### Added
+- Periodic auto-backup timer
+  - Automatically triggers backup at configured intervals (default: 10 minutes)
+  - Runs in background using `System.Timers.Timer`
+  - Only executes when `AutoBackupEnabled` is true and backup is due
+  - Respects smart deduplication (only backs up if database was modified)
+
 ## [1.1.0] - 2025-01-16
 
 ### Added
@@ -17,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Compares `LastUpdateUtc` from database vs `LastBackupTimeUtc` from settings
   - Prevents unnecessary duplicate backups
 - **Auto-Backup on Startup** - Configurable automatic backup
-  - Checks if backup is due based on `AutoBackupIntervalMinutes` (default: 60 minutes)
+  - Checks if backup is due based on `AutoBackupIntervalMinutes` (default: 10 minutes)
   - Only creates backup if database was modified since last backup
   - Configurable via `appsettings.json`
 - **Manual Backup Command** - Blue archive button in toolbar

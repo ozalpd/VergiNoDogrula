@@ -1,6 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 using VergiNoDogrula.Data;
 using VergiNoDogrula.WPF.Models;
+using VergiNoDogrula.WPF.Services;
 using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF
@@ -11,11 +13,13 @@ namespace VergiNoDogrula.WPF
     public partial class MainWindow : Window
     {
         private readonly AppSettings _appSettings = AppSettings.GetAppSettings();
+        private bool _isClosingAfterBackup;
 
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -29,6 +33,24 @@ namespace VergiNoDogrula.WPF
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_isClosingAfterBackup || !_appSettings.AutoBackupEnabled)
+                return;
+
+            e.Cancel = true;
+
+            try
+            {
+                await AutoBackupHelper.RunAsync(byPassIsBackupDue: true);
+            }
+            finally
+            {
+                _isClosingAfterBackup = true;
+                _ = Dispatcher.BeginInvoke(Close, DispatcherPriority.Background);
             }
         }
 

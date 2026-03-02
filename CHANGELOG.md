@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2025-01-16
+
+### Fixed
+- Improved shutdown backup flow by triggering final backup from `MainWindow.Closing` with deferred close to avoid window-closing re-entrancy errors
+
+### Changed
+- Updated application version metadata to `1.1.3`
+
+## [1.1.2] - 2025-01-16
+
 ### Fixed
 - Fixed visibility issue of Backup (Yedekle) and Delete (Sil) buttons in the toolbar
-- Updated version number
 
 ## [1.1.1] - 2025-01-16
 

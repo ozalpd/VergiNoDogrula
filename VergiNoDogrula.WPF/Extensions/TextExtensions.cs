@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace VergiNoDogrula.WPF.Helpers;
+namespace VergiNoDogrula.WPF.Extensions;
 
 internal static class TextExtensions
 {

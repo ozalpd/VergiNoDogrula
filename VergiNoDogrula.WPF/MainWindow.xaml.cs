@@ -18,8 +18,15 @@ namespace VergiNoDogrula.WPF
         public MainWindow()
         {
             InitializeComponent();
+            SourceInitialized += MainWindow_SourceInitialized;
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_SourceInitialized(object? sender, EventArgs e)
+        {
+            SourceInitialized -= MainWindow_SourceInitialized;
+            _appSettings.MainWindowPosition.SetWindowPositions(this);
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -38,6 +45,8 @@ namespace VergiNoDogrula.WPF
 
         private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
+            _appSettings.MainWindowPosition.GetWindowPositions(this);
+
             if (_isClosingAfterBackup || !_appSettings.AutoBackupEnabled)
                 return;
 

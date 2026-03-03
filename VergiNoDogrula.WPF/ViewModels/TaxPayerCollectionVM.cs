@@ -158,7 +158,14 @@ namespace VergiNoDogrula.WPF.ViewModels
                     Collection.Add(new TaxPayerVM(taxPayer));
                 }
 
-                Status = $"{Collection.Count} mükellef kaydı başarıyla yüklendi.";
+                if (Collection.Count > 0)
+                {
+                    Status = $"{Collection.Count} mükellef kaydı başarıyla yüklendi.";
+                }
+                else
+                {
+                    Status = "Veritabanında kayıt bulunamadı.";
+                }
             }
             catch (Exception ex)
             {
@@ -238,12 +245,12 @@ namespace VergiNoDogrula.WPF.ViewModels
                 var settings = AppSettings.GetAppSettings();
                 var connectionString = $"Data Source={settings.DatabasePath}";
                 var backupPath = await _backupService.CreateBackupAsync(connectionString);
-                
+
                 if (backupPath != null)
                 {
                     Status = $"Yedek başarıyla oluşturuldu: {Path.GetFileName(backupPath)}";
                     PlaySuccessSound();
-                    
+
                     await _backupService.CleanupOldBackupsAsync();
                 }
                 else

@@ -42,7 +42,8 @@ VergiNoDogrula/                       # Root / solution directory
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Code-behind with validation and OK button state management
 │   ├── Models/
-│   │   └── AppSettings.cs           # App-level settings (db path, backup folder/interval, LastBackupTimeUtc [UTC], singleton load/save)
+│   │   ├── AppSettings.cs           # App-level settings (db path, backup folder/interval, LastBackupTimeUtc [UTC], singleton load/save)
+│   │   └── WindowPosition.cs        # Window position persistence; uses native Windows API for multi-monitor support + DPI scaling
 │   ├── Services/
 │   │   ├── IBackupService.cs         # Backup service interface: CreateBackupAsync, CleanupOldBackupsAsync, IsBackupDue
 │   │   └── DatabaseBackupService.cs  # SQLite backup implementation using BackupDatabase() API + ZIP compression
@@ -106,7 +107,8 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
 | `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/archive-blue), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
-| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). |
+| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). Also holds `MainWindowPosition` (window location/size persistence). |
+| `Models/WindowPosition.cs` | Encapsulates main window position, size, and DPI-aware multi-monitor restoration. Uses native Windows API (`EnumDisplayMonitors`, `GetMonitorInfo`, `GetDpiForMonitor`) to enumerate monitors, detect the screen containing the window, and apply proper DPI scaling. `GetWindowPositions()` saves state; `SetWindowPositions()` restores state before window is displayed. |
 | `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |
 | `Services/DatabaseBackupService.cs` | SQLite backup implementation using `SqliteConnection.BackupDatabase()` API. Creates timestamped ZIP files. Checks if backup is due based on interval. Auto-cleanup uses `MaxBackupFiles` from settings. |
 | `Services/AutoBackupHelper.cs` | Static helper for auto-backup workflow. Checks if backup is due, compares database modification time with last backup time, creates backup if needed, and performs cleanup of old backups. |
@@ -133,6 +135,12 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
   - `https://github.com/twbs/icons`
   - `MIT`
 - When adding or regenerating icon geometries, do not remove existing attribution notes from `README.md` or `BootstrapIcons.xaml`.
+
+### Native Windows API Usage
+- **P/Invoke declarations** live in `NativeMethods` static classes nested within appropriate model/service files.
+- All P/Invoke calls should be wrapped in `try/catch` with sensible fallbacks to ensure compatibility across Windows versions.
+- Use `[SupportedOSPlatform("windows")]` to mark APIs that are Windows-only.
+- **Multi-monitor and DPI support** — `WindowPosition.SetWindowPositions()` uses `EnumDisplayMonitors`, `GetMonitorInfo`, and `GetDpiForMonitor` to detect monitors and apply correct scaling. Window position is restored via `SourceInitialized` event (before window is displayed) to prevent visual jump.
 
 ### Localization and Sorting
 - The application is designed for Turkish users and uses Turkish culture (`tr-TR`) for text operations.
@@ -229,4 +237,4 @@ The `TaxPayer` class validates properties by throwing exceptions from setters:
 2. **New command** → Inherit from `AbstractCommand`, register in the appropriate collection ViewModel, add `RaiseCanExecuteChanged` calls in the ViewModel where needed, bind via `Command` / `CommandParameter` in XAML.
 3. **New style / resource** → Add to `Resources/Styles.xaml`; it is already merged in `App.xaml`.
 4. **New validation rule** → Implement as an extension method in `ValidateExtensions.cs`; call from the model setter.
-5. **New repository method** → Add to `ITaxPayerRepository`, implement in `SqliteTaxPayerRepository` under `VergiNoDogrula.Data`, call from the appropriate ViewModel method.
+5. **New repository method** → Add to `ITaxPayerRepository`, implement in `SqliteTaxPayerRepository` under `VergiNoDogrula.Data`, call from the appropriate ViewModel method`.

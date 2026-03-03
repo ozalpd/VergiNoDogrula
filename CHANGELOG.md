@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2025-01-17
+
+### Added
+- **Window Position Persistence** - `WindowPosition` model for saving and restoring main window location, size, and multi-monitor awareness
+  - Restored position is applied before window is displayed (via `SourceInitialized` event) to prevent visual jump
+  - DPI-aware handling for multi-monitor setups with proper scaling
+  - Detects primary screen and validates window bounds within available working areas
+
+### Changed
+- **Removed System.Windows.Forms Dependency** - Replaced `Screen.AllScreens` with native Windows API (`EnumDisplayMonitors`)
+  - `WindowPosition.SetWindowPositions()` now uses P/Invoke for monitor enumeration
+  - Eliminates external framework dependency while maintaining multi-monitor and DPI-aware functionality
+  - Uses native `GetDpiForMonitor()` API for accurate DPI scaling across monitors
+- **Window Initialization Flow** - Moved window position restoration from `Loaded` to `SourceInitialized` event
+  - Prevents window visual jump when opening
+  - Window now appears directly at the correct position
+
+### Technical Details
+- Added `WindowPosition` class with native Windows API interop (`user32.dll`, `shcore.dll`)
+- Implemented `EnumerateMonitors()` using `EnumDisplayMonitors` and `GetMonitorInfo`
+- Added `MonitorInfo` helper class encapsulating monitor metadata
+- Enhanced `NativeMethods` with `MONITORINFOEX` struct and monitor enumeration delegates
+
 ## [1.1.4] - 2025-01-16
 
 ### Added

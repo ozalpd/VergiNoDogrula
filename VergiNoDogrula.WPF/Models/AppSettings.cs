@@ -65,38 +65,6 @@ namespace VergiNoDogrula.WPF.Models
         string _backupDir = string.Empty;
 
         /// <summary>
-        /// Gets or sets the time of the last backup in Coordinated Universal Time (UTC).
-        /// </summary>
-        /// <remarks>This property is null if no backup has been performed.</remarks>
-        public DateTime? LastBackupTimeUtc { get; set; }
-
-        /// <summary>
-        /// Number of most recent backups to keep
-        /// </summary>
-        public uint MaxBackupFiles
-        {
-            get
-            {
-                if (backupFilesToKeep < 10)
-                {
-                    backupFilesToKeep = 10;
-                }
-                return backupFilesToKeep;
-            }
-
-            set => backupFilesToKeep = value;
-        }
-        uint backupFilesToKeep = 10;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether audio playback is muted.
-        /// </summary>
-        /// <remarks>When set to <see langword="true"/>, audio output is silenced. Use this property to
-        /// control audio playback in scenarios where muting is required, such as user preferences or application
-        /// settings.</remarks>
-        public bool MuteAudio { get; set; } = false;
-
-        /// <summary>
         /// Gets or sets the file path to the database used by the application. If the path is not set, a default path
         /// is generated.
         /// </summary>
@@ -123,6 +91,40 @@ namespace VergiNoDogrula.WPF.Models
             set => _dbPath = value;
         }
         string _dbPath = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the time of the last backup in Coordinated Universal Time (UTC).
+        /// </summary>
+        /// <remarks>This property is null if no backup has been performed.</remarks>
+        public DateTime? LastBackupTimeUtc { get; set; }
+
+        /// <summary>
+        /// Number of most recent backups to keep
+        /// </summary>
+        public uint MaxBackupFiles
+        {
+            get
+            {
+                if (backupFilesToKeep < 10)
+                {
+                    backupFilesToKeep = 10;
+                }
+                return backupFilesToKeep;
+            }
+
+            set => backupFilesToKeep = value;
+        }
+        uint backupFilesToKeep = 10;
+
+        public WindowPosition MainWindowPosition { get; set; } = new WindowPosition();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether audio playback is muted.
+        /// </summary>
+        /// <remarks>When set to <see langword="true"/>, audio output is silenced. Use this property to
+        /// control audio playback in scenarios where muting is required, such as user preferences or application
+        /// settings.</remarks>
+        public bool MuteAudio { get; set; } = false;
 
         private static string GetDefaultBackupFolderPath() => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),

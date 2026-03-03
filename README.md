@@ -17,6 +17,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
 - **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
+- **Window Position Persistence** — Automatically saves and restores the main window's position, size, and screen on subsequent launches; multi-monitor aware with DPI scaling.
 - **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.
 - **Manual Backup** — One-click backup via toolbar button; creates compressed ZIP files.
 - **Backup Retention** — Auto-cleanup keeps last N backups (configurable via `MaxBackupFiles` in settings, default: 10), preventing disk space bloat.
@@ -140,7 +141,8 @@ VergiNoDogrula/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
 │   │   └── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
 │   ├── Models/
-│   │   └── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
+│   │   ├── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
+│   │   └── WindowPosition.cs        # Window position persistence (multi-monitor aware, DPI-aware, restored before window display)
 │   ├── Services/
 │   │   ├── IBackupService.cs         # Backup service interface
 │   │   └── DatabaseBackupService.cs  # SQLite backup using BackupDatabase() API + ZIP compression
@@ -188,6 +190,7 @@ A WPF application following the **MVVM** pattern:
 - **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`. `BackupDatabaseCommand` triggers manual backup.
 - **Services** encapsulate application-level operations. `DatabaseBackupService` uses SQLite's `BackupDatabase()` API for consistent snapshots while the database is in use, then compresses to ZIP.
 - **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion, and the backup service for database backups. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
+- **`WindowPosition`** model persists the main window's location and size. Detects the appropriate monitor using native Windows API, applies DPI scaling, and restores position before the window is displayed.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
 - **`AppSettings`** is loaded as a singleton and persisted at application shutdown. Contains backup configuration (`AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`).
 - **Auto-backup** runs on application startup if enabled, interval has passed, and database was modified since last backup.
@@ -203,6 +206,7 @@ A WPF application following the **MVVM** pattern:
 - **Real-time Validation** — Input fields show validation errors with red borders and descriptive messages.
 - **Clipboard Support** — Copy taxpayer tax numbers to clipboard with a dedicated copy command.
 - **Backup Integration** — Manual backup button and auto-backup on startup with smart deduplication.
+- **Window Persistence** — Main window position, size, and screen are saved on application exit and restored on next launch; multi-monitor aware.
 
 ## Validation Rules
 

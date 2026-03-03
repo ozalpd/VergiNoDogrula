@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2025-01-17
+## [1.2.0] - 2026-03-03
 
 ### Added
 - **Backup File List Dialog** - View all existing backup files with detailed information
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **IBackupService** - Added `GetBackupFilesAsync()` method to retrieve backup file list
 - **TaxPayerCollectionVM** - Added `ShowBackupListCommand` and exposed `BackupService` for UI binding
 
-## [1.1.5] - 2025-01-17
+## [1.1.5] - 2026-03-02
 
 ### Added
 - **Window Position Persistence** - `WindowPosition` model for saving and restoring main window location, size, and multi-monitor awareness
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `MonitorInfo` helper class encapsulating monitor metadata
 - Enhanced `NativeMethods` with `MONITORINFOEX` struct and monitor enumeration delegates
 
-## [1.1.4] - 2025-01-16
+## [1.1.4] - 2026-03-02
 
 ### Added
 - **Configurable Backup Retention** - `MaxBackupFiles` setting in `AppSettings`
@@ -67,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `DatabaseBackupService.CleanupOldBackupsAsync()` to read `_settings.MaxBackupFiles`
 - `AutoBackupHelper.RunAsync()` now performs cleanup after successful backup creation
 
-## [1.1.3] - 2025-01-16
+## [1.1.3] - 2026-03-02
 
 ### Fixed
 - Improved shutdown backup flow by triggering final backup from `MainWindow.Closing` with deferred close to avoid window-closing re-entrancy errors
@@ -75,12 +75,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated application version metadata to `1.1.3`
 
-## [1.1.2] - 2025-01-16
+## [1.1.2] - 2026-03-02
 
 ### Fixed
 - Fixed visibility issue of Backup (Yedekle) and Delete (Sil) buttons in the toolbar
 
-## [1.1.1] - 2025-01-16
+## [1.1.1] - 2026-03-02
 
 ### Added
 - Periodic auto-backup timer
@@ -89,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Only executes when `AutoBackupEnabled` is true and backup is due
   - Respects smart deduplication (only backs up if database was modified)
 
-## [1.1.0] - 2025-01-16
+## [1.1.0] - 2026-03-02
 
 ### Added
 - **Database Backup Service** - Automated and manual database backup functionality
@@ -171,7 +171,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings: `%APPDATA%\VergiNoDogrula\appsettings.json`
 - Backups: `%USERPROFILE%\Documents\VergiNoDogrula\BackUp\`
 
-## [1.0.0] - 2025-01-15
+## [1.0.0] - 2026-03-01
 
 ### Added
 - Turkish tax number validation (VKN and TCKN)

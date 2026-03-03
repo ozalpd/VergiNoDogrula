@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-01-17
+
+### Added
+- **Backup File List Dialog** - View all existing backup files with detailed information
+  - `BackupListDialog` - Modal window displaying backup files in a DataGrid with three columns: File Name, Creation Date, and Size
+  - `BackupFileInfo` model with auto-formatted file size (KB/MB)
+  - `ShowBackupListCommand` to open the backup list dialog
+  - New toolbar button with `file-earmark` icon positioned between Backup and About buttons
+  - `GetBackupFilesAsync()` method in `IBackupService` and `DatabaseBackupService`
+  - Files are ordered by creation time (newest first)
+  - Empty state message displayed when no backup files exist
+  - `BackupService` property exposed in `TaxPayerCollectionVM` for command binding
+
+### Changed
+- **IBackupService** - Added `GetBackupFilesAsync()` method to retrieve backup file list
+- **TaxPayerCollectionVM** - Added `ShowBackupListCommand` and exposed `BackupService` for UI binding
+
 ## [1.1.5] - 2025-01-17
 
 ### Added

@@ -104,6 +104,20 @@
             </Button>
 
             <Button Style="{StaticResource IconButtonStyle-28x24}"
+                    ToolTip="Yedek dosyalarını görüntüle"
+                    Command="{Binding ShowBackupListCommand}"
+                    CommandParameter="{Binding BackupService}"
+                    AutomationProperties.Name="YedekListesi">
+                <Viewbox Width="14" Height="14">
+                    <Grid>
+                        <Path Fill="#0078D7" Data="{StaticResource file-earmark-zip-fill}" Margin="4,4,0,0"/>
+                        <Path Fill="#0078D7" Data="{StaticResource file-earmark}" Margin="0"/>
+                        <Path Fill="#0078D7" Data="{StaticResource file-earmark}" Margin="-4,-4,0,0"/>
+                    </Grid>
+                </Viewbox>
+            </Button>
+
+            <Button Style="{StaticResource IconButtonStyle-28x24}"
                     ToolTip="Hakkında"
                     Command="{Binding ShowAboutCommand}"
                     AutomationProperties.Name="Hakkında">

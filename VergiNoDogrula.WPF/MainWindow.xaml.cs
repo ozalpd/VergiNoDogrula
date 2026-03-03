@@ -27,6 +27,7 @@ namespace VergiNoDogrula.WPF
         {
             SourceInitialized -= MainWindow_SourceInitialized;
             _appSettings.MainWindowPosition.SetWindowPositions(this);
+            Title = $"Vergi No Doğrula - v{AppVersion.Version}";
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)

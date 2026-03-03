@@ -89,6 +89,7 @@ Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogr
 
 ### Backup Database
 - **Manual backup**: Click the blue archive icon (Yedekle) in the toolbar
+- **View backup list**: Click the file icon next to the backup button to view all backup files with creation dates and sizes
 - **Auto-backup**: Runs on application startup if:
   - Auto-backup is enabled (`AutoBackupEnabled = true`)
   - Backup interval has passed (default: 10 minutes)
@@ -136,12 +137,16 @@ VergiNoDogrula/
 │   │   ├── CopyTaxNumberCommand.cs  # Copies selected taxpayer's tax number to clipboard
 │   │   ├── SaveTaxPayerCommand.cs   # Persists the selected taxpayer to SQLite
 │   │   ├── DeleteTaxPayerCommand.cs # Deletes the selected taxpayer from SQLite
-│   │   └── BackupDatabaseCommand.cs # Manual backup command
+│   │   ├── BackupDatabaseCommand.cs # Manual backup command
+│   │   └── ShowBackupListCommand.cs # Opens backup list dialog
 │   ├── Dialogs/
 │   │   ├── AddTaxPayerDialog.xaml   # Dialog window for creating a new taxpayer
-│   │   └── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
+│   │   ├── AddTaxPayerDialog.xaml.cs # Modal dialog: numeric-only tax number input, real-time validation with duplicate check, auto-focus on tax number, disabled OK button until valid
+│   │   ├── BackupListDialog.xaml    # Dialog window for viewing backup files
+│   │   └── BackupListDialog.xaml.cs # Displays DataGrid with file name, creation date, and size
 │   ├── Models/
 │   │   ├── AppSettings.cs           # App settings singleton (db path, backup settings, save/load)
+│   │   ├── BackupFileInfo.cs        # Backup file metadata (FileName, CreatedDate, SizeInBytes, FormattedSize)
 │   │   └── WindowPosition.cs        # Window position persistence (multi-monitor aware, DPI-aware, restored before window display)
 │   ├── Services/
 │   │   ├── IBackupService.cs         # Backup service interface

@@ -192,4 +192,56 @@ internal class DatabaseBackupService : IBackupService
 
         return DateTime.UtcNow >= nextBackupTime;
     }
+
+    /// <summary>
+    /// Gets the list of backup files in the backup folder.
+    /// </summary>
+    /// <returns>List of backup file information ordered by creation time (newest first).</returns>
+    public async Task<List<BackupFileInfo>> GetBackupFilesAsync()
+    {
+        try
+        {
+            var backupFolder = _settings.BackupFolder;
+            if (!Directory.Exists(backupFolder))
+            {
+                return new List<BackupFileInfo>();
+            }
+
+            return await Task.Run(() =>
+            {
+                var backupFiles = Directory.GetFiles(backupFolder, $"{_backupFilePrefix}*.zip")
+                    .Select(f => new FileInfo(f))
+                    .OrderByDescending(f => f.Name)
+                    .Select(f => new BackupFileInfo
+                    {
+                        FileName = f.Name,
+                        CreatedDate = f.CreationTime,
+                        CreatedDateUtc = f.CreationTimeUtc,
+                        SizeInBytes = f.Length
+                    })
+                    .ToList();
+
+                return backupFiles;
+            });
+        }
+        catch (IOException)
+        {
+            return new List<BackupFileInfo>();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return new List<BackupFileInfo>();
+        }
+    }
+
+    /// <summary>
+    /// Checks if any backup files exist that are newer than the specified UTC time.
+    /// </summary>
+    /// <param name="lastBackupTimeUtc">The UTC timestamp to compare against backup file creation times.</param>
+    /// <returns>True if one or more backup files were created after the specified time; otherwise, false.</returns>
+    public async Task<bool> HasNewerBackupThanAsync(DateTime lastBackupTimeUtc)
+    {
+        var backupFiles = await GetBackupFilesAsync();
+        return backupFiles.Any(f => f.CreatedDateUtc > lastBackupTimeUtc);
+    }
 }

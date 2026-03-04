@@ -137,10 +137,15 @@
                    Foreground="#989898" IsHitTestVisible="False">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFocused, ElementName=SearchTextBox}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsFocused, ElementName=SearchTextBox}" Value="False" />
+                                <Condition Binding="{Binding Text.Length, ElementName=SearchTextBox, FallbackValue=0}" Value="0" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBlock.Style>

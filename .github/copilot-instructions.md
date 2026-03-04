@@ -108,7 +108,7 @@ A WPF desktop application. References `VergiNoDogrula` and `VergiNoDogrula.Data`
 | `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. |
 | `Dialogs/BackupListDialog.xaml` | Modal dialog for viewing backup files. Displays DataGrid with file name, creation date (dd.MM.yyyy HH:mm), and formatted size. Shows empty state message when no backups exist. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
-| `MainWindow.xaml` | Grid layout with search box (with focus-hiding placeholder "Ara.."), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/BackupList/About), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
+| `MainWindow.xaml` | Grid layout with search box (with smart placeholder "Ara.." that hides when focused OR contains text), labelled TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/BackupList/About), and a `DataGrid` with empty-state template ("Henüz kayıt yok"), and a status bar. |
 | `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). Also holds `MainWindowPosition` (window location/size persistence). |
 | `Models/WindowPosition.cs` | Encapsulates main window position, size, and DPI-aware multi-monitor restoration. Uses native Windows API (`EnumDisplayMonitors`, `GetMonitorInfo`, `GetDpiForMonitor`) to enumerate monitors, detect the screen containing the window, and apply proper DPI scaling. `GetWindowPositions()` saves state; `SetWindowPositions()` restores state before window is displayed. |
 | `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |
@@ -231,7 +231,7 @@ The `TaxPayer` class validates properties by throwing exceptions from setters:
   - **Text input** → filters by `Title` using case-insensitive `Contains()`.
 - `CollectionFiltered` is an `ObservableCollection<TaxPayerVM>` bound to the DataGrid. When search is empty, it references the full `Collection`; otherwise it's a new filtered collection.
 - Search TextBox in `MainWindow.xaml` uses `UpdateSourceTrigger=PropertyChanged` for real-time filtering.
-- A placeholder TextBlock ("Ara..") overlays the search box and is hidden when the TextBox gains focus (via `DataTrigger` on `IsFocused` with `IsHitTestVisible=False` to allow click-through).
+- A placeholder TextBlock ("Ara..") overlays the search box and is hidden when the TextBox is focused OR contains text. Uses `MultiDataTrigger` with default `Visibility=Collapsed` and shows only when NOT focused AND text is empty (`IsHitTestVisible=False` allows click-through to the TextBox).
 
 ## Adding New Features — Checklist
 

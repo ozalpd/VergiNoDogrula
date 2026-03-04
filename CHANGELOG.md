@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-03-03
+
+### Fixed
+- **Search Placeholder Visibility** - Fixed search box placeholder ("Ara..") logic to properly hide when focused OR contains text
+  - Changed from conflicting triggers to `MultiDataTrigger` with proper conditions
+  - Placeholder now only visible when SearchTextBox is NOT focused AND has no text
+  - Prevents placeholder from reappearing when typing after losing focus
+
 ## [1.2.0] - 2026-03-03
 
 ### Added
@@ -96,7 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `IBackupService` interface and `DatabaseBackupService` implementation
   - Uses SQLite's `BackupDatabase()` API for consistent snapshots while database is in use
   - ZIP compression with `CompressionLevel.Optimal` for efficient storage
-  - Timestamped backup files: `taxpayers_backup_yyyyMMdd_HHmmss.zip`
+  - Timestamped backup files: `taxpayers_backup_yyyyMMdd_HHmms.zip`
 - **Smart Backup Deduplication** - Only backs up when database has been modified
   - Compares `LastUpdateUtc` from database vs `LastBackupTimeUtc` from settings
   - Prevents unnecessary duplicate backups

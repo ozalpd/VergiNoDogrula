@@ -38,6 +38,10 @@ internal partial class BackupListDialog : Window
                 StatusTextBlock.Text = "Son yedek işleminden daha yeni bir yedekleme dosyası bulundu!";
                 StatusTextBlock2.Text = $"Yedekleme Dosyası: {recentBackup.FileName}";
             }
+            else
+            {
+                StatusContainer.Visibility = Visibility.Collapsed;
+            }
         }
         catch (Exception ex)
         {

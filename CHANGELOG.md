@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.1] - 2026-03-03
+## [1.2.2] - 2026-03-04
+
+### Changed
+- **BackupListDialog UI** - Optimized layout by hiding empty status elements
+  - `StatusContainer` is now collapsed when no new backups are detected
+  - Prevents wasted vertical space when backup status notification is not needed
+  - Improves dialog visual hierarchy and focus on backup file list
+
+## [1.2.1] - 2026-03-04
 
 ### Fixed
 - **Search Placeholder Visibility** - Fixed search box placeholder ("Ara..") logic to properly hide when focused OR contains text

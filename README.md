@@ -1,5 +1,7 @@
 # VergiNoDogrula
 
+**Version 1.2.2**
+
 A WPF desktop application for validating Turkish tax identification numbers — **Vergi Kimlik Numarası (VKN)** and **TC Kimlik Numarası (TCKN)**.
 
 ## Third-Party Assets

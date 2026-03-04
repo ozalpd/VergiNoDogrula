@@ -8,10 +8,10 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\tax-icon-01.ico</ApplicationIcon>
     
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <InformationalVersion>1.2.1</InformationalVersion>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
+    <InformationalVersion>1.2.2</InformationalVersion>
     <Company>VergiNoDogrula</Company>
     <Product>VergiNo ve TCKN Doğrula</Product>
     <Copyright>Copyright © 2025</Copyright>

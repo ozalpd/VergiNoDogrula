@@ -1,6 +1,6 @@
 # VergiNoDogrula
 
-**Version 1.3.0**
+**Version 1.3.1**
 
 A WPF desktop application for validating Turkish tax identification numbers — **Vergi Kimlik Numarası (VKN)** and **TC Kimlik Numarası (TCKN)**.
 
@@ -21,6 +21,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **Localization Support** — Shared `VergiNoDogrula.i18n` resource library with reusable `.resx` resources for WPF, MAUI, and ASP.NET.
 - **Localized WPF UI** — Main window, dialogs, labels, tooltips, status text, and user-facing messages are localized through the shared `Strings` resource class.
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
+- **Scrollable Taxpayer Grid** — The main DataGrid uses a constrained layout row so large record sets remain scrollable.
 - **Window Position Persistence** — Automatically saves and restores the main window's position, size, and screen on subsequent launches; multi-monitor aware with DPI scaling.
 - **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.
 - **Manual Backup** — One-click backup via toolbar button; creates compressed ZIP files.
@@ -33,7 +34,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 
 ## Screenshots
 
-The main window provides a search box with placeholder text for filtering records, text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), **Sil** (Delete), and copy buttons, and a DataGrid listing all entered taxpayer records with an empty-state message when no records exist.
+The main window provides a search box with placeholder text for filtering records, text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), **Sil** (Delete), and copy buttons, and a scrollable DataGrid listing all entered taxpayer records with an empty-state message when no records exist.
 
 ## Prerequisites
 

@@ -125,7 +125,72 @@ A WPF desktop application. References `VergiNoDogrula`, `VergiNoDogrula.Data`, a
 | `Dialogs/BackupListDialog.xaml` | Modal dialog for viewing backup files. Displays DataGrid with localized file name, creation date, and size headers. Shows localized empty state message when no backups exist. Hides status notification when no new backups are detected. |
 | `Dialogs/BackupListDialog.xaml.cs` | Code-behind for backup list dialog. Loads backup files asynchronously, displays localized status notification when a newer backup exists, and provides buttons to open backup and database folders. |
 | `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
-| `MainWindow.xaml` | Grid layout with localized search box placeholder, localized labels/tooltips/headers, TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/BackupList/About), and a `DataGrid` with localized empty-state template and a status bar. |
+| `MainWindow.xaml` | Grid layout with localized search box placeholder, localized labels/tooltips/headers, TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/BackupList/About), and a `DataGrid` with localized empty-state template and a status bar. Keep the DataGrid in a star-sized (`*`) grid row so large lists remain scrollable. |
+| `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). Also holds `MainWindowPosition` (window location/size persistence). |
+| `Models/WindowPosition.cs` | Encapsulates main window position, size, and DPI-aware multi-monitor restoration. Uses native Windows API (`EnumDisplayMonitors`, `GetMonitorInfo`, `GetDpiForMonitor`) to enumerate monitors, detect the screen containing the window, and apply proper DPI scaling. `GetWindowPositions()` saves state; `SetWindowPositions()` restores state before window is displayed. |
+| `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |
+| `Services/DatabaseBackupService.cs` | SQLite backup implementation using `SqliteConnection.BackupDatabase()` API. Creates timestamped ZIP files. Checks if backup is due based on interval. Auto-cleanup uses `MaxBackupFiles` from settings. |
+| `Services/AutoBackupHelper.cs` | Static helper for auto-backup workflow. Checks if backup is due, compares database modification time with last backup time, creates backup if needed, and performs cleanup of old backups. |
+
+
+## Architecture Overview
+
+The solution follows an N-tier architecture with strict separation between presentation, business-logic, data-access, and localization layers.
+
+### Business-Logic Layer — `VergiNoDogrula`
+
+A .NET class library containing validation rules and domain models. **No WPF or data-access dependencies.**
+
+| File | Purpose |
+|---|---|
+| `Models/ITaxPayer.cs` | Contract for a tax-paying entity (`Title`, `TaxNumber`). |
+| `Models/TaxPayer.cs` | Concrete model. Property setters throw `ArgumentNullException` / `ArgumentException` on invalid input. Implements `IEquatable<TaxPayer>` (equality by `TaxNumber`). |
+| `ValidateExtensions.cs` | Static extension methods for Turkish tax-number validation: 10-digit VKN and 11-digit TCKN algorithms. All methods are pure and thread-safe. |
+
+### Data-Access Layer — `VergiNoDogrula.Data`
+
+A .NET class library dedicated to persistence. Depends on `Microsoft.Data.Sqlite`.
+
+| File | Purpose |
+|---|---|
+| `ITaxPayerRepository.cs` | Repository interface defining async CRUD operations: `GetAllAsync`, `SaveAsync`, `DeleteAsync`, `GetByTaxNumberAsync`. |
+| `SqliteTaxPayerRepository.cs` | SQLite-backed implementation. Auto-creates the database and `TaxPayers` table on first use. Uses `UPSERT` (INSERT … ON CONFLICT … UPDATE) for save operations. Tracks CUD metadata in `DatabaseMetadata` and exposes `LastUpdateTime` (local time). |
+| `IDatabaseMetadataRepository.cs` | Repository interface for accessing `DatabaseMetadata` table (last update timestamp). |
+| `SqliteDatabaseMetadataRepository.cs` | UTC-aware metadata reader; reads `LastUpdateUtc` from database; provides `GetLastUpdateTimeUtcAsync()` and `GetLastUpdateTimeAsync()` (local time conversion). |
+
+### Localization Layer — `VergiNoDogrula.i18n`
+
+A framework-agnostic .NET class library dedicated to localized resources.
+
+| File | Purpose |
+|---|---|
+| `Strings.resx` | Default resource file. |
+| `Strings.tr.resx` | Turkish translation resource file. |
+| `Strings.Designer.cs` | Generated public strongly-typed resource class accessed as `Strings.ResourceKey`. |
+
+### Presentation Layer — `VergiNoDogrula.WPF`
+
+A WPF desktop application. References `VergiNoDogrula`, `VergiNoDogrula.Data`, and `VergiNoDogrula.i18n`.
+
+| Folder / File | Purpose |
+|---|---|
+| `ViewModels/AbstractViewModel.cs` | Base class providing `INotifyPropertyChanged` via `RaisePropertyChanged`. |
+| `ViewModels/AbstractCollectionVM.cs` | Generic base class for collection ViewModels. Provides `Collection` (ObservableCollection<T>), `CollectionFiltered` (filtered view), `SelectedItem`, and `SearchString` properties. Defines abstract hooks: `OnSearchStringChanged`, `OnSelectedItemChanging`, `OnSelectedItemChanged` for derived classes to implement filtering and selection lifecycle logic. |
+| `ViewModels/AbstractDataErrorInfoVM.cs` | Base class adding `INotifyDataErrorInfo` with an `_errors` dictionary, `AddError`, `ClearErrors`, and `GetErrors`. |
+| `ViewModels/TaxPayerVM.cs` | Wraps a `TaxPayer` model; validates by calling model setters in a `try/catch` and forwarding exception messages to the error dictionary. Exposes `Validate()` for on-demand (pre-save) validation. |
+| `ViewModels/TaxPayerCollectionVM.cs` | Owns `ObservableCollection<TaxPayerVM>`, `SelectedItem`, commands, and `ITaxPayerRepository`. Provides `LoadDataAsync`, `SaveCurrentAsync`, `DeleteSelectedAsync`. Subscribes to `SelectedItem.ErrorsChanged` to refresh command states. Implements smart search: numeric input filters by `TaxNumber` (contains), text input filters by `Title` (case-insensitive contains). Uses localized status, confirmation, warning, and error strings from `Strings`. |
+| `Commands/AbstractCommand.cs` | Base `ICommand` with public `RaiseCanExecuteChanged`. |
+| `Commands/AddTaxPayerCommand.cs` | Opens `AddTaxPayerDialog` to create a new `TaxPayerVM`. Passes `TaxPayerCollection` to the dialog for duplicate tax number validation. On success, adds the new taxpayer to the collection and selects it. |
+| `Commands/CopyTaxNumberCommand.cs` | Copies the selected taxpayer's tax number to the system clipboard. Enabled only when `SelectedItem` is non-null. |
+| `Commands/SaveTaxPayerCommand.cs` | Persists the selected `TaxPayerVM` to SQLite via the repository. Enabled only when `SelectedItem` is non-null and has no validation errors. |
+| `Commands/DeleteTaxPayerCommand.cs` | Deletes the selected `TaxPayerVM` from SQLite with a confirmation dialog. Enabled only when `SelectedItem` is non-null. |
+| `Commands/BackupDatabaseCommand.cs` | Manual backup command; creates timestamped ZIP backup. |
+| `Commands/ShowBackupListCommand.cs` | Opens the backup list dialog. Takes `IBackupService` as parameter to load backup files. |
+| `Dialogs/AddTaxPayerDialog.xaml` | Modal dialog for creating a new taxpayer. Features: numeric-only input for tax number, real-time validation (format & duplicate check), auto-focus on tax number field, disabled OK button until both fields are valid. Requires `TaxPayerCollection` property to be set for duplicate validation. Localized in XAML via `x:Static i18n:Strings.*`. |
+| `Dialogs/BackupListDialog.xaml` | Modal dialog for viewing backup files. Displays DataGrid with localized file name, creation date, and size headers. Shows localized empty state message when no backups exist. Hides status notification when no new backups are detected. |
+| `Dialogs/BackupListDialog.xaml.cs` | Code-behind for backup list dialog. Loads backup files asynchronously, displays localized status notification when a newer backup exists, and provides buttons to open backup and database folders. |
+| `Resources/Styles.xaml` | `DisabledWhenNullTextBoxStyle` — disables TextBoxes when `SelectedItem` is null, shows validation errors with red border and message. |
+| `MainWindow.xaml` | Grid layout with localized search box placeholder, localized labels/tooltips/headers, TextBoxes bound to `SelectedItem.TaxNumber` / `SelectedItem.Title`, icon buttons (Ekle/Save/Delete/Copy/Backup/BackupList/About), and a `DataGrid` with localized empty-state template and a status bar. Keep the DataGrid in a star-sized (`*`) grid row so large lists remain scrollable. |
 | `Models/AppSettings.cs` | Singleton app settings persisted under `%APPDATA%\VergiNoDogrula\appsettings.json` (`DatabasePath`, backup settings: `AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`, `MaxBackupFiles`). Also holds `MainWindowPosition` (window location/size persistence). |
 | `Models/WindowPosition.cs` | Encapsulates main window position, size, and DPI-aware multi-monitor restoration. Uses native Windows API (`EnumDisplayMonitors`, `GetMonitorInfo`, `GetDpiForMonitor`) to enumerate monitors, detect the screen containing the window, and apply proper DPI scaling. `GetWindowPositions()` saves state; `SetWindowPositions()` restores state before window is displayed. |
 | `Services/IBackupService.cs` | Backup service interface: `CreateBackupAsync`, `CleanupOldBackupsAsync`, `IsBackupDue`. |

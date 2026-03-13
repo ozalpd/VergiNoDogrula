@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-03-13
+
+### Fixed
+- **DataGrid Scrolling in Main Window** - Fixed the taxpayer list not scrolling when the record count grows
+  - Changed the DataGrid host row in `MainWindow.xaml` from `Auto` to star-sized (`*`) to provide a constrained viewport
+  - Updated DataGrid placement to use the dedicated content row, enabling built-in vertical scrolling behavior
+
 ## [1.3.0] - 2026-03-13
 
 ### Added

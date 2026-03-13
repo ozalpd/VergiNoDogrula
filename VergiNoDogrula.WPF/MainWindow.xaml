@@ -27,10 +27,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="12" />
             <RowDefinition Height="18" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="18" />
-            <RowDefinition Height="18" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
@@ -181,7 +178,7 @@
                  Text="{Binding SelectedItem.Title, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}">
         </TextBox>
 
-        <DataGrid Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="6" Grid.RowSpan="3" Margin="0"
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="7" Margin="0"
                   ItemsSource="{Binding CollectionFiltered}" 
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"

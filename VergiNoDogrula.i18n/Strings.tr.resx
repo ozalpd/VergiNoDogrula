@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+  <!-- Window Titles -->
+  <data name="MainWindowTitle" xml:space="preserve">
+    <value>VergiNo ve TCKN Doğrula</value>
+  </data>
+  <data name="AddTaxPayerDialogTitle" xml:space="preserve">
+    <value>Yeni Vergi Mükellefi Ekle</value>
+  </data>
+  <data name="BackupListDialogTitle" xml:space="preserve">
+    <value>Yedek Dosyaları</value>
+  </data>
+
+  <!-- Labels -->
+  <data name="TaxNumberLabel" xml:space="preserve">
+    <value>Vergi Numarası:</value>
+  </data>
+  <data name="TaxNumberShortLabel" xml:space="preserve">
+    <value>Vergi No:</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Ünvan:</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Ara..</value>
+  </data>
+
+  <!-- Button Labels -->
+  <data name="OkButton" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+
+  <!-- Tooltips -->
+  <data name="AddTaxPayerTooltip" xml:space="preserve">
+    <value>Yeni bir mükellef eklemek için tıklayın</value>
+  </data>
+  <data name="SaveTaxPayerTooltip" xml:space="preserve">
+    <value>Seçili mükellefi kaydetmek için tıklayın</value>
+  </data>
+  <data name="DeleteTaxPayerTooltip" xml:space="preserve">
+    <value>Seçili mükellefi silmek için tıklayın</value>
+  </data>
+  <data name="CopyTaxNumberTooltip" xml:space="preserve">
+    <value>Vergi numarasını kopyala</value>
+  </data>
+  <data name="BackupDatabaseTooltip" xml:space="preserve">
+    <value>Veritabanını yedeklemek için tıklayın</value>
+  </data>
+  <data name="ShowBackupListTooltip" xml:space="preserve">
+    <value>Yedek dosyalarını görüntüle</value>
+  </data>
+  <data name="ClearSearchTooltip" xml:space="preserve">
+    <value>Sorgu kutusunu temizle</value>
+  </data>
+  <data name="AboutTooltip" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="OpenBackupFolderTooltip" xml:space="preserve">
+    <value>Yedek klasörünü açmak için tıklayın</value>
+  </data>
+  <data name="OpenDatabaseFolderTooltip" xml:space="preserve">
+    <value>Veri tabanı klasörünü açmak için tıklayın</value>
+  </data>
+
+  <!-- DataGrid Headers -->
+  <data name="TaxNumberHeader" xml:space="preserve">
+    <value>Vergi Numarası</value>
+  </data>
+  <data name="TitleHeader" xml:space="preserve">
+    <value>Ünvan</value>
+  </data>
+  <data name="FileNameHeader" xml:space="preserve">
+    <value>Dosya Adı</value>
+  </data>
+  <data name="CreatedDateHeader" xml:space="preserve">
+    <value>Oluşturma Tarihi</value>
+  </data>
+  <data name="SizeHeader" xml:space="preserve">
+    <value>Boyut</value>
+  </data>
+
+  <!-- Status Messages -->
+  <data name="TaxPayersLoadedFormat" xml:space="preserve">
+    <value>{0} mükellef kaydı başarıyla yüklendi.</value>
+    <comment>{0} = record count</comment>
+  </data>
+  <data name="NoRecordsInDatabase" xml:space="preserve">
+    <value>Veritabanında kayıt bulunamadı.</value>
+  </data>
+  <data name="TaxPayerSavedSuccess" xml:space="preserve">
+    <value>Mükellef bilgisi başarıyla kaydedildi.</value>
+  </data>
+  <data name="TaxPayerDeletedSuccess" xml:space="preserve">
+    <value>Kayıt başarıyla silindi.</value>
+  </data>
+  <data name="BackupCreatedFormat" xml:space="preserve">
+    <value>Yedek başarıyla oluşturuldu: {0}</value>
+    <comment>{0} = backup file name</comment>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>Yedekleme başarısız oldu.</value>
+  </data>
+
+  <!-- Empty State Messages -->
+  <data name="NoRecordsYet" xml:space="preserve">
+    <value>Henüz kayıt yok</value>
+  </data>
+  <data name="NoBackupFilesFound" xml:space="preserve">
+    <value>Yedek dosyası bulunamadı</value>
+  </data>
+
+  <!-- Confirmation / Dialog Messages -->
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Seçili kaydı silmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="ConfirmationTitle" xml:space="preserve">
+    <value>Onay</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+
+  <!-- Error Messages -->
+  <data name="DataLoadErrorFormat" xml:space="preserve">
+    <value>Veriler yüklenirken hata oluştu: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="SaveErrorFormat" xml:space="preserve">
+    <value>Kayıt sırasında hata oluştu: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="DeleteErrorFormat" xml:space="preserve">
+    <value>Silme işlemi sırasında hata oluştu: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="BackupErrorFormat" xml:space="preserve">
+    <value>Yedekleme sırasında hata oluştu: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="BackupLoadErrorFormat" xml:space="preserve">
+    <value>Yedek dosyaları yüklenirken hata oluştu: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="BackupCreateFailed" xml:space="preserve">
+    <value>Veritabanı yedeği oluşturulamadı.</value>
+  </data>
+  <data name="RecordNotFound" xml:space="preserve">
+    <value>Kayıt bulunamadı.</value>
+  </data>
+  <data name="FolderOpenErrorFormat" xml:space="preserve">
+    <value>Klasör açılamadı: {0}</value>
+    <comment>{0} = exception message</comment>
+  </data>
+  <data name="DuplicateTaxNumber" xml:space="preserve">
+    <value>Bu vergi numarası zaten mevcut.</value>
+  </data>
+
+  <!-- Backup List Status -->
+  <data name="NewerBackupFound" xml:space="preserve">
+    <value>Son yedek işleminden daha yeni bir yedekleme dosyası bulundu!</value>
+  </data>
+  <data name="BackupFileNameFormat" xml:space="preserve">
+    <value>Yedekleme Dosyası: {0}</value>
+    <comment>{0} = backup file name</comment>
+  </data>
+
+</root>

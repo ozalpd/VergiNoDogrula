@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-13
+
+### Added
+- **Shared Localization Library** - Added `VergiNoDogrula.i18n` as a framework-agnostic localization project
+  - Uses `.resx` resource files with generated public `Strings` class
+  - Includes default English resources in `Strings.resx` and Turkish translations in `Strings.tr.resx`
+  - Designed to be reusable from WPF, MAUI, and ASP.NET projects
+
+### Changed
+- **WPF UI Localization** - Localized WPF windows, dialogs, tooltips, labels, grid headers, status messages, and dialog messages
+  - `MainWindow.xaml` and `MainWindow.xaml.cs` now read visible text from `Strings`
+  - `TaxPayerCollectionVM` now uses localized status, confirmation, warning, and error strings
+  - `AddTaxPayerDialog.xaml` and `AddTaxPayerDialog.xaml.cs` now use localized resources
+  - `BackupListDialog.xaml` and `BackupListDialog.xaml.cs` now use localized resources
+- **BackupListDialog Cleanup** - Renamed helper method from `OpenFolde` to `OpenFolder`
+
+### Localization
+- Migrated user-facing WPF text to shared resource keys in `Strings`
+  - `MainWindow` now uses localized window title, search placeholder, labels, tooltips, grid headers, and empty-state text
+  - `AddTaxPayerDialog` now uses localized dialog title, labels, and action buttons
+  - `BackupListDialog` now uses localized dialog title, headers, tooltips, close button, status text, and error messages
+  - `TaxPayerCollectionVM` now formats localized status, confirmation, warning, and backup messages
+
 ## [1.2.2] - 2026-03-04
 
 ### Changed

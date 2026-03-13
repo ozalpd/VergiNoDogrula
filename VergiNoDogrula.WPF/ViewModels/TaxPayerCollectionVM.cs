@@ -5,6 +5,7 @@ using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using VergiNoDogrula.Data;
+using VergiNoDogrula.i18n;
 using VergiNoDogrula.Models;
 using VergiNoDogrula.WPF.Commands;
 using VergiNoDogrula.WPF.Extensions;
@@ -163,16 +164,16 @@ namespace VergiNoDogrula.WPF.ViewModels
 
                 if (Collection.Count > 0)
                 {
-                    Status = $"{Collection.Count} mükellef kaydı başarıyla yüklendi.";
+                    Status = string.Format(Strings.TaxPayersLoadedFormat, Collection.Count);
                 }
                 else
                 {
-                    Status = "Veritabanında kayıt bulunamadı.";
+                    Status = Strings.NoRecordsInDatabase;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Veriler yüklenirken hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Strings.DataLoadErrorFormat, ex.Message), Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             OnSearchStringChanged();
@@ -202,12 +203,12 @@ namespace VergiNoDogrula.WPF.ViewModels
             {
                 var taxPayer = new TaxPayer(SelectedItem.Title, SelectedItem.TaxNumber);
                 await _repository.SaveAsync(taxPayer);
-                Status = "Mükellef bilgisi başarıyla kaydedildi.";
+                Status = Strings.TaxPayerSavedSuccess;
                 PlaySuccessSound();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Kayıt sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Strings.SaveErrorFormat, ex.Message), Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -216,7 +217,7 @@ namespace VergiNoDogrula.WPF.ViewModels
             if (SelectedItem == null)
                 return;
 
-            var result = MessageBox.Show("Seçili kaydı silmek istediğinizden emin misiniz?", "Onay", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show(Strings.DeleteConfirmation, Strings.ConfirmationTitle, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes)
                 return;
 
@@ -227,17 +228,17 @@ namespace VergiNoDogrula.WPF.ViewModels
                 {
                     Collection.Remove(SelectedItem);
                     SelectedItem = null;
-                    Status = "Kayıt başarıyla silindi.";
+                    Status = Strings.TaxPayerDeletedSuccess;
                     OnSearchStringChanged();
                 }
                 else
                 {
-                    MessageBox.Show("Kayıt bulunamadı.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(Strings.RecordNotFound, Strings.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Silme işlemi sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Strings.DeleteErrorFormat, ex.Message), Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -251,20 +252,20 @@ namespace VergiNoDogrula.WPF.ViewModels
 
                 if (backupPath != null)
                 {
-                    Status = $"Yedek başarıyla oluşturuldu: {Path.GetFileName(backupPath)}";
+                    Status = string.Format(Strings.BackupCreatedFormat, Path.GetFileName(backupPath));
                     PlaySuccessSound();
 
                     await _backupService.CleanupOldBackupsAsync();
                 }
                 else
                 {
-                    Status = "Yedekleme başarısız oldu.";
-                    MessageBox.Show("Veritabanı yedeği oluşturulamadı.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Status = Strings.BackupFailed;
+                    MessageBox.Show(Strings.BackupCreateFailed, Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Yedekleme sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Strings.BackupErrorFormat, ex.Message), Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

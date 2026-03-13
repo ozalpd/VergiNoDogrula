@@ -1,6 +1,6 @@
 # VergiNoDogrula
 
-**Version 1.2.2**
+**Version 1.3.0**
 
 A WPF desktop application for validating Turkish tax identification numbers — **Vergi Kimlik Numarası (VKN)** and **TC Kimlik Numarası (TCKN)**.
 
@@ -18,6 +18,8 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **VKN Validation** — Validates 10-digit Turkish corporate tax identification numbers using the official checksum algorithm.
 - **TCKN Validation** — Validates 11-digit Turkish national identity numbers using the official checksum algorithm.
 - **Taxpayer Management** — Add, save, and delete taxpayer records with title and tax number.
+- **Localization Support** — Shared `VergiNoDogrula.i18n` resource library with reusable `.resx` resources for WPF, MAUI, and ASP.NET.
+- **Localized WPF UI** — Main window, dialogs, labels, tooltips, status text, and user-facing messages are localized through the shared `Strings` resource class.
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
 - **Window Position Persistence** — Automatically saves and restores the main window's position, size, and screen on subsequent launches; multi-monitor aware with DPI scaling.
 - **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.
@@ -31,7 +33,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 
 ## Screenshots
 
-The main window provides a search box with placeholder text for filtering records, text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), **Sil** (Delete), and copy buttons, and a DataGrid listing all entered taxpayer records with an empty-state message ("Henüz kayıt yok") when no records exist.
+The main window provides a search box with placeholder text for filtering records, text fields for entering a tax number and title, **Ekle** (Add), **Kaydet** (Save), **Sil** (Delete), and copy buttons, and a DataGrid listing all entered taxpayer records with an empty-state message when no records exist.
 
 ## Prerequisites
 
@@ -60,6 +62,24 @@ dotnet run --project VergiNoDogrula.WPF
 ```
 
 Or open `VergiNoDogrula.sln` in Visual Studio and press **F5** with `VergiNoDogrula.WPF` set as the startup project.
+
+## Localization
+
+Localization is implemented with the shared `VergiNoDogrula.i18n` class library.
+
+- Default resources live in `VergiNoDogrula.i18n/Strings.resx`
+- Turkish translations live in `VergiNoDogrula.i18n/Strings.tr.resx`
+- The generated public `Strings` class is consumed directly from WPF XAML and C#
+- The localization library is framework-agnostic and can be reused from WPF, MAUI, and ASP.NET projects
+
+### Example usage
+
+```csharp
+using VergiNoDogrula.i18n;
+
+var title = Strings.MainWindowTitle;
+var message = string.Format(Strings.TaxPayersLoadedFormat, 10);
+```
 
 ## Usage
 
@@ -132,6 +152,10 @@ VergiNoDogrula/
 │   ├── SqliteTaxPayerRepository.cs   # SQLite-backed implementation + DatabaseMetadata tracking
 │   ├── IDatabaseMetadataRepository.cs # Repository interface for database metadata access
 │   └── SqliteDatabaseMetadataRepository.cs # UTC-aware metadata reader
+├── VergiNoDogrula.i18n/              # Shared localization class library (net10.0)
+│   ├── Strings.resx                  # Default resource file
+│   ├── Strings.tr.resx               # Turkish translations
+│   └── Strings.Designer.cs           # Generated public strongly-typed resource accessors
 ├── VergiNoDogrula.WPF/              # WPF presentation layer (net10.0-windows)
 │   ├── Commands/
 │   │   ├── AbstractCommand.cs       # Base ICommand implementation
@@ -189,6 +213,15 @@ A dedicated .NET class library for persistence. Contains:
 - **`SqliteDatabaseMetadataRepository`** — UTC-aware metadata reader; provides `GetLastUpdateTimeUtcAsync()` and `GetLastUpdateTimeAsync()` (local time conversion).
 - **`Microsoft.Data.Sqlite`** package reference — Kept in this project so the core library stays lean and persistence-agnostic.
 
+### Localization Layer (`VergiNoDogrula.i18n`)
+
+A framework-agnostic .NET class library containing shared localized resources.
+
+- **`Strings.resx`** — Default language resource file.
+- **`Strings.tr.resx`** — Turkish translation resource file.
+- **`Strings.Designer.cs`** — Generated public strongly-typed resource class used from XAML and C#.
+- The library is designed to be reusable from WPF, MAUI, and ASP.NET projects.
+
 ### Presentation Layer (`VergiNoDogrula.WPF`)
 
 A WPF application following the **MVVM** pattern:
@@ -196,19 +229,21 @@ A WPF application following the **MVVM** pattern:
 - **ViewModels** delegate validation to the model layer, translating exceptions into `INotifyDataErrorInfo` entries for UI binding.
 - **Commands** inherit from `AbstractCommand` and contain minimal logic. `AddTaxPayerCommand` opens `AddTaxPayerDialog` for new taxpayer entry. `SaveTaxPayerCommand` and `DeleteTaxPayerCommand` bridge async repository calls via `async void Execute`. `BackupDatabaseCommand` triggers manual backup.
 - **Services** encapsulate application-level operations. `DatabaseBackupService` uses SQLite's `BackupDatabase()` API for consistent snapshots while the database is in use, then compresses to ZIP.
-- **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, and deletion, and the backup service for database backups. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
+- **`TaxPayerCollectionVM`** integrates the repository for data loading, saving, deletion, backup operations, and localized status/error messaging. It subscribes to `SelectedItem` changes and `ErrorsChanged` to refresh command states.
 - **`WindowPosition`** model persists the main window's location and size. Detects the appropriate monitor using native Windows API, applies DPI scaling, and restores position before the window is displayed.
 - **Styles** are defined in `Resources/Styles.xaml` and merged via `App.xaml`.
 - **`AppSettings`** is loaded as a singleton and persisted at application shutdown. Contains backup configuration (`AutoBackupEnabled`, `AutoBackupIntervalMinutes`, `BackupFolder`, `LastBackupTimeUtc`).
 - **Auto-backup** runs on application startup if enabled, interval has passed, and database was modified since last backup.
 - **Data** is loaded asynchronously on startup via `MainWindow` initialization.
+- **Localization** in XAML uses `x:Static i18n:Strings.ResourceKey`, while code-behind and ViewModels use `Strings.ResourceKey` directly.
 
 #### UI Features
 
 - **Smart Search** — Numeric input filters by tax number, text input filters by title (case-insensitive).
-- **Placeholder Text** — Search box shows "Ara.." hint text that disappears on focus.
-- **Empty State** — DataGrid shows "Henüz kayıt yok" (No records yet) when the collection is empty.
-- **Status Bar** — Displays operation feedback (success/error messages, record counts).
+- **Localized UI Text** — Window titles, labels, tooltips, dialog buttons, grid headers, empty-state text, status text, and message box content are loaded from shared resources.
+- **Placeholder Text** — Search box shows localized hint text that disappears on focus or when text is entered.
+- **Empty State** — DataGrid shows a localized empty-state message when the collection is empty.
+- **Status Bar** — Displays localized operation feedback (success/error messages, record counts).
 - **Icon Buttons** — Uses Bootstrap Icons for Add (plus-circle), Save (floppy), Delete (trash3), Backup (archive-blue) operations.
 - **Real-time Validation** — Input fields show validation errors with red borders and descriptive messages.
 - **Clipboard Support** — Copy taxpayer tax numbers to clipboard with a dedicated copy command.
@@ -242,6 +277,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 | UI Framework | WPF |
 | Language | C# 14.0 |
 | Local Database | SQLite via `Microsoft.Data.Sqlite` |
+| Localization | Shared `.resx` resources via `VergiNoDogrula.i18n` |
 | Build System | SDK-style projects, `dotnet` CLI |
 
 ## Contributing
@@ -252,7 +288,7 @@ Both algorithms are implemented in `ValidateExtensions.cs`. The `IsValidTaxNumbe
 4. Push to the branch (`git push origin feature/my-feature`).
 5. Open a Pull Request.
 
-Please maintain the existing separation of concerns — validation logic belongs in `VergiNoDogrula`, data-access logic belongs in `VergiNoDogrula.Data`, and UI logic belongs in `VergiNoDogrula.WPF`.
+Please maintain the existing separation of concerns — validation logic belongs in `VergiNoDogrula`, data-access logic belongs in `VergiNoDogrula.Data`, localization resources belong in `VergiNoDogrula.i18n`, and UI logic belongs in `VergiNoDogrula.WPF`.
 
 ## License
 

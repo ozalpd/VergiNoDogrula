@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using VergiNoDogrula.i18n;
 using VergiNoDogrula.WPF.Models;
 using VergiNoDogrula.WPF.Services;
 
@@ -35,8 +36,8 @@ internal partial class BackupListDialog : Window
             var recentBackup = backupFiles.FirstOrDefault();
             if (recentBackup != null && recentBackup.CreatedDateUtc > _settings.LastBackupTimeUtc)
             {
-                StatusTextBlock.Text = "Son yedek işleminden daha yeni bir yedekleme dosyası bulundu!";
-                StatusTextBlock2.Text = $"Yedekleme Dosyası: {recentBackup.FileName}";
+                StatusTextBlock.Text = Strings.NewerBackupFound;
+                StatusTextBlock2.Text = string.Format(Strings.BackupFileNameFormat, recentBackup.FileName);
             }
             else
             {
@@ -46,14 +47,14 @@ internal partial class BackupListDialog : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Yedek dosyaları yüklenirken hata oluştu: {ex.Message}",
-                "Hata",
+                string.Format(Strings.BackupLoadErrorFormat, ex.Message),
+                Strings.ErrorTitle,
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
     }
 
-    private void OpenFolde(string folderPath)
+    private void OpenFolder(string folderPath)
     {
         try
         {
@@ -67,8 +68,8 @@ internal partial class BackupListDialog : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Klasör açılamadı: {ex.Message}",
-                "Hata",
+                string.Format(Strings.FolderOpenErrorFormat, ex.Message),
+                Strings.ErrorTitle,
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -76,13 +77,13 @@ internal partial class BackupListDialog : Window
 
     private void OpenBackupFolderButton_Click(object sender, RoutedEventArgs e)
     {
-        OpenFolde(_settings.BackupFolder);
+        OpenFolder(_settings.BackupFolder);
     }
 
     private void OpenDatabaseFolderButton_Click(object sender, RoutedEventArgs e)
     {
         var folderPath = Directory.GetParent(_settings.DatabasePath)?.FullName;
         if (!string.IsNullOrEmpty(folderPath))
-            OpenFolde(folderPath);
+            OpenFolder(folderPath);
     }
 }

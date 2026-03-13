@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using VergiNoDogrula.i18n;
 using VergiNoDogrula.WPF.ViewModels;
 
 namespace VergiNoDogrula.WPF.Dialogs;
@@ -113,7 +114,7 @@ public partial class AddTaxPayerDialog : Window
         {
             if (TaxPayerCollection.Collection.Any(t => t.TaxNumber.Equals(taxNumber)))
             {
-                ErrorMessage.Text = "Bu vergi numarası zaten mevcut.";
+                ErrorMessage.Text = Strings.DuplicateTaxNumber;
                 return false;
             }
         }

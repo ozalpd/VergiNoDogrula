@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
 using VergiNoDogrula.Data;
+using VergiNoDogrula.i18n;
 using VergiNoDogrula.WPF.Models;
 using VergiNoDogrula.WPF.Services;
 using VergiNoDogrula.WPF.ViewModels;
@@ -27,7 +28,7 @@ namespace VergiNoDogrula.WPF
         {
             SourceInitialized -= MainWindow_SourceInitialized;
             _appSettings.MainWindowPosition.SetWindowPositions(this);
-            Title = $"Vergi No Doğrula - v{AppVersion.Version}";
+            Title = $"{Strings.MainWindowTitle} - v{AppVersion.Version}";
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -40,7 +41,7 @@ namespace VergiNoDogrula.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, ex.Message, Strings.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

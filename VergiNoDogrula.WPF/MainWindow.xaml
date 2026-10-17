@@ -8,14 +8,14 @@
         mc:Ignorable="d"
         Title="{x:Static i18n:Strings.MainWindowTitle}"
         Height="400" MinHeight="400"
-        Width="600" MinWidth="600" MaxWidth="600">
+        Width="600" MinWidth="416" MaxWidth="600">
     <Grid Margin="8,8,8,8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="160" />
-            <ColumnDefinition Width="22" />
-            <ColumnDefinition Width="22" />
             <ColumnDefinition Width="96" />
+            <ColumnDefinition Width="144" />
+            <ColumnDefinition Width="22" />
+            <ColumnDefinition Width="22" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="22" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -76,7 +76,7 @@
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource IconButtonStyle-28x24}"
                     ToolTip="{x:Static i18n:Strings.BackupDatabaseTooltip}"
                     Background="#1D9BF0"
@@ -157,7 +157,7 @@
                 <Path Fill="Black" Data="{StaticResource x-circle}"/>
             </Viewbox>
         </Button>
-        
+
         <Label Grid.Column="0" Grid.Row="2" Content="{x:Static i18n:Strings.TaxNumberLabel}" VerticalAlignment="Top" Margin="0" />
         <TextBox Grid.Column="1" Grid.Row="2" Margin="4,4,0,0" VerticalAlignment="Top"
                  Style="{StaticResource DisabledWhenNullTextBoxStyle}"
@@ -179,7 +179,7 @@
         </TextBox>
 
         <DataGrid Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="7" Margin="0"
-                  ItemsSource="{Binding CollectionFiltered}" 
+                  ItemsSource="{Binding CollectionFiltered}"
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
@@ -195,11 +195,11 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="DataGrid">
-                                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                        <Border BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                 Background="{TemplateBinding Background}">
-                                            <TextBlock Text="{x:Static i18n:Strings.NoRecordsYet}" 
-                                                       HorizontalAlignment="Center" 
+                                            <TextBlock Text="{x:Static i18n:Strings.NoRecordsYet}"
+                                                       HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        FontSize="14"
                                                        Foreground="Gray" />

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Update SQLite Dependency** - Upgraded `Microsoft.Data.Sqlite` to version `10.0.13` in `VergiNoDogrula.Data`
+- **Responsive Layout Adjustments** - Enhanced `MainWindow.xaml` sizing and layout flexibility
+  - Reduced main window `MinWidth` from `600` to `416` for narrower screen support
+  - Refined grid column widths (`Col 0`: `96`, `Col 1`: `144`, `Col 4`: `*`) to enable responsive stretching
+  - Adjusted right-aligned toolbar stack panel placement to span columns 4–6
+  - Cleaned up extraneous XAML whitespace
+
 ## [1.3.1] - 2026-03-13
 
 ### Fixed

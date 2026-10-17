@@ -21,6 +21,7 @@ A WPF desktop application for validating Turkish tax identification numbers — 
 - **Localization Support** — Shared `VergiNoDogrula.i18n` resource library with reusable `.resx` resources for WPF, MAUI, and ASP.NET.
 - **Localized WPF UI** — Main window, dialogs, labels, tooltips, status text, and user-facing messages are localized through the shared `Strings` resource class.
 - **Real-time Search** — Filter taxpayers by tax number (numeric search) or title (text search) with instant results.
+- **Responsive Layout** — Flexible grid and toolbar layout supporting narrower windows.
 - **Scrollable Taxpayer Grid** — The main DataGrid uses a constrained layout row so large record sets remain scrollable.
 - **Window Position Persistence** — Automatically saves and restores the main window's position, size, and screen on subsequent launches; multi-monitor aware with DPI scaling.
 - **Automatic Backup** — Smart backup on startup: only backs up when database has changed and backup interval has passed.

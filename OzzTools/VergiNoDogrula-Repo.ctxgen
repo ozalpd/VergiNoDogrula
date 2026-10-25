@@ -1,0 +1,472 @@
+﻿{
+  "ProfileName": "Default Profile",
+  "TargetSourcePath": "..\\",
+  "LatestSourceWriteAt": "2026-10-25T16:22:36.9228179+03:00",
+  "LastPackedAt": "2026-10-25T16:22:56.8004944+03:00",
+  "RepoUrl": "https://github.com/ozalpd/VergiNoDogrula",
+  "License": "MIT",
+  "IsOpenSource": null,
+  "Description": "",
+  "SystemPrompt": "",
+  "Layout": 10,
+  "LayoutHeader": "Repository Structure",
+  "SelectedSuffixes": [],
+  "ExcludedFolders": [
+    "bin",
+    "obj",
+    ".git",
+    ".vs",
+    ".vscode",
+    "packages",
+    "node_modules",
+    "GeneratedCodes",
+    "Library",
+    "Temp",
+    "UserSettings",
+    "Logs",
+    "Build",
+    "Builds"
+  ],
+  "TrackedFiles": {
+    "VergiNoDogrula.sln": {
+      "RelativePath": "VergiNoDogrula.sln",
+      "LastWriteTime": "2026-03-13T18:46:39.7893003+03:00",
+      "FileHash": "E2200776166CF357E99D84EB1341E4F50EA420DF608312447972B362C895AD54",
+      "FileSize": 3009,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "CHANGELOG.md": {
+      "RelativePath": "CHANGELOG.md",
+      "LastWriteTime": "2026-10-17T17:08:23.4383015+03:00",
+      "FileHash": "1243653C50D7915FADA1C14EA644091DEA2CC78053D5646FB87C85532FEAD5E0",
+      "FileSize": 12552,
+      "ContextNote": "This file is a markdown document and may not contain source code.",
+      "PackingMode": 10
+    },
+    "README.md": {
+      "RelativePath": "README.md",
+      "LastWriteTime": "2026-10-17T17:08:23.4383015+03:00",
+      "FileHash": "511C4B1AC7A0F95B012BD2FB8F8A1BE70D88D73BF06ACDA36FB032C3121AFFD5",
+      "FileSize": 17068,
+      "ContextNote": "This file is a markdown document and may not contain source code.",
+      "PackingMode": 10
+    },
+    ".github\\copilot-instructions.md": {
+      "RelativePath": ".github\\copilot-instructions.md",
+      "LastWriteTime": "2026-03-13T21:34:13.582221+03:00",
+      "FileHash": "92D37424E615043E65501B8BD9A303F129FBCE4AB84D7BDD69946B102A00F91E",
+      "FileSize": 31380,
+      "ContextNote": "This file is a markdown document and may not contain source code.",
+      "PackingMode": 10
+    },
+    "OzzTools\\VergiNoDogrula-Repo.ctxgen": {
+      "RelativePath": "OzzTools\\VergiNoDogrula-Repo.ctxgen",
+      "LastWriteTime": "2026-10-25T16:20:30.3534109+03:00",
+      "FileHash": "A07040D769FF1AB6F7EECE2CFA6A25D1D8D8A9503704BF555D64B87E3064C960",
+      "FileSize": 20746,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "OzzTools\\VergiNoDogrula.ctxgen": {
+      "RelativePath": "OzzTools\\VergiNoDogrula.ctxgen",
+      "LastWriteTime": "2026-10-25T16:22:36.9228179+03:00",
+      "FileHash": "02E5D8EEDC1C020F27C3969E4777B5AA016853D3266E9106E65B4CFBD23737BF",
+      "FileSize": 20243,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula\\VergiNoDogrula.csproj": {
+      "RelativePath": "VergiNoDogrula\\VergiNoDogrula.csproj",
+      "LastWriteTime": "2026-03-02T14:47:56.9636386+03:00",
+      "FileHash": "9E1A3B201DFC8666B36CBD3A49A958FDF3114FE84B141FA18D121DA96DF0E1BB",
+      "FileSize": 343,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula\\ValidateExtensions.cs": {
+      "RelativePath": "VergiNoDogrula\\ValidateExtensions.cs",
+      "LastWriteTime": "2025-11-12T11:08:08.8846749+03:00",
+      "FileHash": "330322387256CD3464F40691F51928BD7E4FA979A54470D0798250A9F1918BC3",
+      "FileSize": 5329,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula\\Models\\ITaxPayer.cs": {
+      "RelativePath": "VergiNoDogrula\\Models\\ITaxPayer.cs",
+      "LastWriteTime": "2025-11-12T11:03:39.6804717+03:00",
+      "FileHash": "C2BC425FBB6DD8B058A425834D4CC1AD7173F16D8541BD9FAEB75C617FA80066",
+      "FileSize": 294,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula\\Models\\TaxPayer.cs": {
+      "RelativePath": "VergiNoDogrula\\Models\\TaxPayer.cs",
+      "LastWriteTime": "2025-11-12T11:05:57.5859242+03:00",
+      "FileHash": "9DA5C64EB389E95DA5A0DA9361E2C8C8C3683C891A481A19F29C8E5DEDB7AC9D",
+      "FileSize": 3232,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.Data\\VergiNoDogrula.Data.csproj": {
+      "RelativePath": "VergiNoDogrula.Data\\VergiNoDogrula.Data.csproj",
+      "LastWriteTime": "2026-10-17T17:08:23.4383015+03:00",
+      "FileHash": "C35C69CB1D9C35F05E29CE904D46D100EEA6C9523936BE3A992995A5B777037F",
+      "FileSize": 561,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.Data\\IDatabaseMetadataRepository.cs": {
+      "RelativePath": "VergiNoDogrula.Data\\IDatabaseMetadataRepository.cs",
+      "LastWriteTime": "2026-03-02T13:05:44.8915642+03:00",
+      "FileHash": "F6D965DFD4DD4B65778D7FCAED6462A46B265DBAB818932949095A5E5BDB5274",
+      "FileSize": 630,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.Data\\ITaxPayerRepository.cs": {
+      "RelativePath": "VergiNoDogrula.Data\\ITaxPayerRepository.cs",
+      "LastWriteTime": "2026-02-27T02:44:02.6926781+03:00",
+      "FileHash": "AE408062601AD142B2EB5E692FC2996A6C2578F31E313B89501966282C54362C",
+      "FileSize": 1669,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.Data\\SqliteDatabaseMetadataRepository.cs": {
+      "RelativePath": "VergiNoDogrula.Data\\SqliteDatabaseMetadataRepository.cs",
+      "LastWriteTime": "2026-03-02T13:39:11.5657024+03:00",
+      "FileHash": "7973E78F5417717CC8448FA84A575C422CBBF8854BA088F01FA76BF9B1762C67",
+      "FileSize": 1936,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.Data\\SqliteTaxPayerRepository.cs": {
+      "RelativePath": "VergiNoDogrula.Data\\SqliteTaxPayerRepository.cs",
+      "LastWriteTime": "2026-03-02T02:13:15.6478722+03:00",
+      "FileHash": "664717927DF502EA3C4E858E5B3013888FC5E6BD7F32DB0AB814F060CAD7ADEB",
+      "FileSize": 6281,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.i18n\\VergiNoDogrula.i18n.csproj": {
+      "RelativePath": "VergiNoDogrula.i18n\\VergiNoDogrula.i18n.csproj",
+      "LastWriteTime": "2026-03-13T19:38:32.5122644+03:00",
+      "FileHash": "4487075B6D0C2C2860BBB65C3868158535185E2C5AB6A514A5FCC8F47FAA9D2C",
+      "FileSize": 744,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.i18n\\Strings.Designer.cs": {
+      "RelativePath": "VergiNoDogrula.i18n\\Strings.Designer.cs",
+      "LastWriteTime": "2026-03-13T19:53:45.9886421+03:00",
+      "FileHash": "BD55A60ADD8079AB006AEB37BADFE2B5A56202DB2EE037AF9BB7904268FF1D08",
+      "FileSize": 18488,
+      "ContextNote": "This file is auto-generated and contains designer code.",
+      "PackingMode": 10
+    },
+    "VergiNoDogrula.i18n\\Strings.resx": {
+      "RelativePath": "VergiNoDogrula.i18n\\Strings.resx",
+      "LastWriteTime": "2026-03-13T19:54:17.4041765+03:00",
+      "FileHash": "A0E3095257DBE138572BBF11EF6E83B9A5CB7DB04504FFCE2A4D725A198BDE2B",
+      "FileSize": 10016,
+      "ContextNote": "This file contains localizable resources.",
+      "PackingMode": 10
+    },
+    "VergiNoDogrula.i18n\\Strings.tr.resx": {
+      "RelativePath": "VergiNoDogrula.i18n\\Strings.tr.resx",
+      "LastWriteTime": "2026-03-13T19:54:16.7550506+03:00",
+      "FileHash": "A754C447124048275D17E7C2288523ADD701048BFFCAE655FE347813EF2A3308",
+      "FileSize": 10610,
+      "ContextNote": "This file contains localizable resources.",
+      "PackingMode": 10
+    },
+    "VergiNoDogrula.WPF\\VergiNoDogrula.WPF.csproj": {
+      "RelativePath": "VergiNoDogrula.WPF\\VergiNoDogrula.WPF.csproj",
+      "LastWriteTime": "2026-03-13T21:18:14.2111593+03:00",
+      "FileHash": "DBA4AE87984B9EB3134D5AE413AFDA17CFA29AAB592BC7F718459FE28BE63D8A",
+      "FileSize": 1118,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\App.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\App.xaml",
+      "LastWriteTime": "2026-02-28T17:44:50.4782738+03:00",
+      "FileHash": "2C73FDB684360256060836D5F3D08A64654EB905E6AFC6F27E7E6D0894028BD6",
+      "FileSize": 697,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\App.xaml.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\App.xaml.cs",
+      "LastWriteTime": "2026-03-02T18:47:09.464888+03:00",
+      "FileHash": "9202EDBBF4C6CC406A6A58F599BA46EAEFD207F9D265D08BEBED00352F841343",
+      "FileSize": 1530,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\AssemblyInfo.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\AssemblyInfo.cs",
+      "LastWriteTime": "2025-11-10T13:57:07.6466307+03:00",
+      "FileHash": "1D31ED3C7E4AAF76FABB82E330208385CB70685E9B7C577764493A4D169BCA61",
+      "FileSize": 644,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\MainWindow.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\MainWindow.xaml",
+      "LastWriteTime": "2026-10-17T17:08:23.4396188+03:00",
+      "FileHash": "ADF18E0CEB6E57CEC75697B308D5187B9967F247069E30936B9009480E5E8A19",
+      "FileSize": 12070,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\MainWindow.xaml.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\MainWindow.xaml.cs",
+      "LastWriteTime": "2026-03-13T19:45:40.4318943+03:00",
+      "FileHash": "B8F010D013DBDC4723B8C8A42A61FA124CE988272D4DA7FC2502DB9ADA9B4FC3",
+      "FileSize": 2522,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\AbstractCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\AbstractCommand.cs",
+      "LastWriteTime": "2026-02-27T03:16:36.1555784+03:00",
+      "FileHash": "ECCB719EAC19C44B71508FC1A6259F846F44B0AC912D7DF073001181541564E5",
+      "FileSize": 506,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\AddTaxPayerCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\AddTaxPayerCommand.cs",
+      "LastWriteTime": "2026-02-28T20:27:11.5178317+03:00",
+      "FileHash": "D19E19016F44522BB4445A1109403ED855B5A20B53203D9280929A61368E7D84",
+      "FileSize": 1283,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\BackupDatabaseCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\BackupDatabaseCommand.cs",
+      "LastWriteTime": "2026-03-02T11:09:29.3482938+03:00",
+      "FileHash": "1FC8AB27A4A432690E10FDDB2F815E28FF71C4F08D46CC1240881B25EDBE374E",
+      "FileSize": 391,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\CopyTaxNumberCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\CopyTaxNumberCommand.cs",
+      "LastWriteTime": "2026-03-01T14:21:10.4986238+03:00",
+      "FileHash": "E5704A95F87032E9AFBBAE241CCF3053B123118196DFABB68E992E5FE1F91AD9",
+      "FileSize": 825,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\DeleteTaxPayerCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\DeleteTaxPayerCommand.cs",
+      "LastWriteTime": "2026-03-01T14:19:49.263731+03:00",
+      "FileHash": "05E6E26F25554B3A1B7AD057F08C1AEF6142B048507781F4BF2340B4FB21E2C8",
+      "FileSize": 639,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\EmptySearchStringCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\EmptySearchStringCommand.cs",
+      "LastWriteTime": "2026-03-01T19:34:30.1420591+03:00",
+      "FileHash": "7A40694120019F838A25BC8CDD1DE6465CD6DB7822703C04A03F75DEDC56E7CB",
+      "FileSize": 408,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\SaveTaxPayerCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\SaveTaxPayerCommand.cs",
+      "LastWriteTime": "2026-02-27T02:44:51.0677845+03:00",
+      "FileHash": "71EED5DA538C9A67A911EB21ACAF14554274B8C6EEA56C70B75DB53A623D593C",
+      "FileSize": 687,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\ShowAboutCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\ShowAboutCommand.cs",
+      "LastWriteTime": "2026-03-02T14:08:13.9540377+03:00",
+      "FileHash": "4E11A769E36C3804FB9C990C21691D95C9F2EBE38CE4FFD25D427AE882AE95CF",
+      "FileSize": 419,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Commands\\ShowBackupListCommand.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Commands\\ShowBackupListCommand.cs",
+      "LastWriteTime": "2026-03-03T17:36:08.758813+03:00",
+      "FileHash": "C5FB77CFEB0FE75A8ABF4C4EF40B4999592983772043F7FF96DC175DCD76771E",
+      "FileSize": 712,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\AboutDialog.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\AboutDialog.xaml",
+      "LastWriteTime": "2026-03-02T14:40:31.7622084+03:00",
+      "FileHash": "67B85FF0C5C88C205D631EA80A45F193B315739793A3A6E45626D5835A1AA507",
+      "FileSize": 2835,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\AboutDialog.xaml.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\AboutDialog.xaml.cs",
+      "LastWriteTime": "2026-03-02T14:08:00.6576348+03:00",
+      "FileHash": "922A59D94C5B87BCC33B394B789C2F17282FFC68CE6E163CFF562C694DB9667A",
+      "FileSize": 1162,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\AddTaxPayerDialog.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\AddTaxPayerDialog.xaml",
+      "LastWriteTime": "2026-03-13T19:55:52.1034015+03:00",
+      "FileHash": "0367B36826CC2FF173BF217ACB332FFD5EB51CABEF5FE8FEBFCC753FC156863D",
+      "FileSize": 2389,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\AddTaxPayerDialog.xaml.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\AddTaxPayerDialog.xaml.cs",
+      "LastWriteTime": "2026-03-13T19:54:31.5683728+03:00",
+      "FileHash": "2047325E902CA6DBD012A8C1BE15A85DB70CFBE6C9F0985583DE3D0CD455135D",
+      "FileSize": 3572,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\BackupListDialog.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\BackupListDialog.xaml",
+      "LastWriteTime": "2026-03-13T19:58:21.9200905+03:00",
+      "FileHash": "36A90A028E2C29D3571E4C6C16A51AA2A13DBFBD321E044124273EA19E265135",
+      "FileSize": 4993,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Dialogs\\BackupListDialog.xaml.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Dialogs\\BackupListDialog.xaml.cs",
+      "LastWriteTime": "2026-03-13T20:00:28.0633448+03:00",
+      "FileHash": "5F91B349679EDA7DDF665DF33F890714CD8A0D91F2F5921BB890891600EDE249",
+      "FileSize": 2823,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Extensions\\TextExtensions.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Extensions\\TextExtensions.cs",
+      "LastWriteTime": "2026-03-02T19:17:19.8520047+03:00",
+      "FileHash": "CCA44742D58D11109484A49539865BEFF3D5D7A8A4498E9FBA49D9673A6E03BA",
+      "FileSize": 502,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Models\\AppSettings.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Models\\AppSettings.cs",
+      "LastWriteTime": "2026-03-03T16:27:00.237003+03:00",
+      "FileHash": "4111846AC8479F0DA3AFB0F0B6C20CF293006CBBF471A5A598CEE9F1E6C95DB4",
+      "FileSize": 7216,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Models\\AppVersion.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Models\\AppVersion.cs",
+      "LastWriteTime": "2026-03-02T14:07:26.5671682+03:00",
+      "FileHash": "E0A91D96E8CBE60C881C03525F8607460CA3EBAE5292AE9BE5CFFAC4E37E7F46",
+      "FileSize": 1490,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Models\\BackupFileInfo.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Models\\BackupFileInfo.cs",
+      "LastWriteTime": "2026-03-03T21:31:46.5497483+03:00",
+      "FileHash": "C27D09F9EE05519B98C7D9AC71157AC6511B5BD5C96D90EB130606BF755E9E2C",
+      "FileSize": 752,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Models\\WindowPosition.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Models\\WindowPosition.cs",
+      "LastWriteTime": "2026-03-03T16:27:00.237003+03:00",
+      "FileHash": "B3CFD694003D40B470CF3F893D69AE5DFC70CF832E920F2029C075762D59BAF7",
+      "FileSize": 8496,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Resources\\BootstrapIcons.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\Resources\\BootstrapIcons.xaml",
+      "LastWriteTime": "2026-02-28T19:21:46.2285287+03:00",
+      "FileHash": "DD0149CF1B553F79870422290B5352A65A84001D21C6742D65E81EFBB04DDCAD",
+      "FileSize": 1904956,
+      "ContextNote": "Bootstrap Icons asset attribution from https://icons.getbootstrap.com  v1.13.1",
+      "PackingMode": 10
+    },
+    "VergiNoDogrula.WPF\\Resources\\Styles.xaml": {
+      "RelativePath": "VergiNoDogrula.WPF\\Resources\\Styles.xaml",
+      "LastWriteTime": "2026-03-01T18:58:36.5095496+03:00",
+      "FileHash": "D80BB47834BB42A29B24C1FFD66AC4429BB9BEF5BFB96B7C46FB95EF891FF93E",
+      "FileSize": 2309,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Services\\AutoBackupHelper.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Services\\AutoBackupHelper.cs",
+      "LastWriteTime": "2026-03-08T18:22:54.2030583+03:00",
+      "FileHash": "A6D10B0DA231B3F32A59DF83D00158505B90CC79A02F9551695164C7004A6F47",
+      "FileSize": 1266,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Services\\DatabaseBackupService.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Services\\DatabaseBackupService.cs",
+      "LastWriteTime": "2026-03-08T18:22:54.2030583+03:00",
+      "FileHash": "10DEE03A69828D8E5305D88C28E4A3F97AA672381D5B53D94CC73FBDFFC955C4",
+      "FileSize": 8032,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\Services\\IBackupService.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\Services\\IBackupService.cs",
+      "LastWriteTime": "2026-03-08T18:22:54.2030583+03:00",
+      "FileHash": "860B1B64CE87FE46A4F16601F310D7970AB4E4A5BA5AE8F4E76F09CE806C31DD",
+      "FileSize": 1615,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\ViewModels\\AbstractCollectionVM.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\ViewModels\\AbstractCollectionVM.cs",
+      "LastWriteTime": "2026-03-01T17:52:23.2057107+03:00",
+      "FileHash": "67916A13DF491B02EBEF5995C4A831480307EFA76C5CFC7384FDB0BF6CCBFF03",
+      "FileSize": 1721,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\ViewModels\\AbstractDataErrorInfoVM.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\ViewModels\\AbstractDataErrorInfoVM.cs",
+      "LastWriteTime": "2026-02-27T01:30:40.3213281+03:00",
+      "FileHash": "A7F63A3C59AD1721D5DE05772DF9E7E4C247153F012E4671AFD5484DCED29CA4",
+      "FileSize": 1555,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\ViewModels\\AbstractViewModel.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\ViewModels\\AbstractViewModel.cs",
+      "LastWriteTime": "2026-02-27T01:25:20.9836358+03:00",
+      "FileHash": "072F8682ACAA6853414C12C2A6C381E207683B9E82091876552847D756A05C17",
+      "FileSize": 527,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\ViewModels\\TaxPayerCollectionVM.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\ViewModels\\TaxPayerCollectionVM.cs",
+      "LastWriteTime": "2026-03-13T19:47:50.9457825+03:00",
+      "FileHash": "43F059431EDEAE931952F62F7B1CE23702F4763E2C49123D3415DF5B3D3DAD75",
+      "FileSize": 9574,
+      "ContextNote": "",
+      "PackingMode": 20
+    },
+    "VergiNoDogrula.WPF\\ViewModels\\TaxPayerVM.cs": {
+      "RelativePath": "VergiNoDogrula.WPF\\ViewModels\\TaxPayerVM.cs",
+      "LastWriteTime": "2026-02-28T16:08:35.5804059+03:00",
+      "FileHash": "AB559FD0438A1327F6628B2451C5702C75CD111D1F42CB0AE282CD15A52F5817",
+      "FileSize": 2417,
+      "ContextNote": "",
+      "PackingMode": 20
+    }
+  }
+}
